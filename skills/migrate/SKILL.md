@@ -32,9 +32,13 @@ Rewrite every line to autobuild's own word and sentence caps, and its positive-f
 
 Gate: `prd.md` exists, matches `schemas/prd.md`'s 9 sections, and every line meets its cap.
 
-## Step 3 — Map every phase
+## Step 3 — Map the current phase
 
-For each phase under `specs/`, completed or in-flight, map:
+Map only the phase Step 1 read from `.build-state.json` — the old project's most recent one, done or in-flight.
+
+Leave every other phase under `specs/` where it sits. A finished phase is already summed up in `prd.md`'s Roadmap and `changelog.md`. No later skill opens an old phase's own folder again (`RULE.md`), so migrating it a second time spends real cost for zero future reads.
+
+For the current phase, map:
 
 - `requirements.md`'s User Stories → `user-stories.md`'s Stories
 - `outcome-card.md`'s frozen contract → `user-stories.md`'s Scope and `prd.md`'s When-is-done
@@ -44,7 +48,7 @@ For each phase under `specs/`, completed or in-flight, map:
 
 Same rewrite discipline as Step 2. Every migrated line meets autobuild's own caps, not the old stack's.
 
-Gate: every phase under `specs/` has its matching `spec/<phase>/` directory. Each schema's sections are present, each line under its own cap.
+Gate: the current phase has its matching `spec/<phase>/` directory. Each schema's sections are present, each line under its own cap.
 
 ## Step 4 — Carry over the trail
 
@@ -70,10 +74,10 @@ Gate: the state script ran clean. The commit succeeded.
 
 Build only from the steps above.
 
-Gate on `prd.md` and every migrated `spec/<phase>/`. Spawn a blind agent — it sees only the migrated docs, never the old-stack originals. It checks:
+Gate on `prd.md` and the current phase's migrated `spec/<phase>/`. Spawn a blind agent — it sees only the migrated docs, never the old-stack originals. It checks:
 
 - Every section of every migrated doc meets its own word and sentence cap.
 - No negative or prohibition language survived the migration.
-- Every phase the old project shipped has a matching `spec/<phase>/` on this side.
+- The current phase has a matching `spec/<phase>/` on this side. No older phase was migrated.
 
 Pass moves to `autobuild:explore` — call the Skill tool with that id, global mode — to confirm the migrated PRD with the user. Fail returns to Step 2 with the findings.

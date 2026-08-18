@@ -1,6 +1,6 @@
 {
   "name": "autobuild",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "AI-assisted software building, seven skills. Explore turns an idea into a PRD and roadmap. Spec writes each phase's contract. Implement builds it test-first. Wrap checks it, ships it, and reports back. Replan archives a build and hands back a clean slate to pivot from. Migrate brings old build-stack projects onto this stack, once. Polish drains the backlog in small batches. Invoked as /autobuild:<name>.",
   "author": {
     "name": "Anh Trinh",
