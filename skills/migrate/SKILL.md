@@ -79,5 +79,3 @@ Gate on `prd.md` and the current phase's migrated `spec/<phase>/`. Spawn a blind
 - Every section of every migrated doc meets its own word and sentence cap.
 - No negative or prohibition language survived the migration.
 - The current phase has a matching `spec/<phase>/` on this side. No older phase was migrated.
-
-Pass moves to `autobuild:explore` — call the Skill tool with that id, global mode — to confirm the migrated PRD with the user. Fail returns to Step 2 with the findings.
