@@ -59,6 +59,12 @@ One phase per line, in build order.
 
 - Phase <N> — <name>: <what it delivers> — <why it is next>
 
+Phase 1 is a thin shell — navigable structure, no real feature work yet. Guard this: the moment "shell" grows a real feature, it's no longer Phase 1's job.
+
+The phase or phases after it deliver the core promise — the one thing the product fundamentally does. This is the foundation the MVP gets built on, not the MVP itself. It can span more than one phase.
+
+Every phase after that is one vertical slice — one thing the app can do, or the user can.
+
 Slice by user-facing value, never by pipeline's-own-work-order, an output-class ladder, or a single artifact's property. Run the slice test on each phase: a user outside the team can say what changed. If the user calls the roadmap illogical, the axis is wrong, not the phase — reslice from a different axis, don't reorder within this one.
 
 ## When is done
