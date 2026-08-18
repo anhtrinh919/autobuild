@@ -1,0 +1,17 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "autobuild",
+  "description": "AI-assisted software building — idea to shipped, four skills, no fixed pipeline.",
+  "owner": {
+    "name": "Anh Trinh",
+    "url": "https://github.com/anhtrinh919"
+  },
+  "plugins": [
+    {
+      "name": "autobuild",
+      "description": "Explore → PRD and roadmap. Spec → each phase's contract. Implement → test-first code. Wrap → checked, shipped, reported back. Migrate → one-time bridge from the old build stack. Invoked as /autobuild:<name>.",
+      "source": "./",
+      "category": "workflow"
+    }
+  ]
+}

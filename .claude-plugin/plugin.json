@@ -1,0 +1,20 @@
+{
+  "name": "autobuild",
+  "version": "0.1.0",
+  "description": "AI-assisted software building, four skills. Explore turns an idea into a PRD and roadmap. Spec writes each phase's contract. Implement builds it test-first. Wrap checks it, ships it, and reports back. Migrate brings old build-stack projects onto this stack, once. Invoked as /autobuild:<name>.",
+  "author": {
+    "name": "Anh Trinh",
+    "url": "https://github.com/anhtrinh919"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/anhtrinh919/autobuild",
+  "repository": "https://github.com/anhtrinh919/autobuild.git",
+  "keywords": [
+    "sdd",
+    "claude-code",
+    "spec-driven",
+    "tdd",
+    "workflow"
+  ],
+  "skills": "./skills/"
+}
