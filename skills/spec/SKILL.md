@@ -5,7 +5,7 @@ description: Writes a phase's design brief and contract from its user stories an
 
 # Spec
 
-Per phase only. Reads `spec/<phase>/user-stories.md` and `prd.md`.
+Per phase only. Reads `spec/<phase>/user-stories.md` and `prd.md` — never another phase's `spec/`.
 
 - Step: one unit of work.
 - Gate: the check at the end of a step.
@@ -94,7 +94,13 @@ Check the contract against the user stories and the design:
 
 Gate: all six hold. Fix any that do not before moving on.
 
-Gate: show the contract to the user. Get their approval.
+Write `spec/<phase>/features.md`, following `schemas/features.md` — every business rule and endpoint in `contract.md`, translated to plain language. No API, no data model, no code.
+
+Record positive facts only. Never write "never X" or "out of scope" into the doc.
+
+Gate: every business rule and endpoint in `contract.md` traces to exactly one function in `features.md`.
+
+Gate: show `features.md` to the user. Get their approval.
 
 ## Step 6 — Close
 
@@ -106,11 +112,12 @@ Gate: the state script ran clean. The commit succeeded.
 
 Build only from the steps above.
 
-Gate on `spec/<phase>/contract.md`. Spawn a blind agent — it sees only the contract and the user stories, never the interview or the design. It checks:
+Gate on `spec/<phase>/contract.md` and `spec/<phase>/features.md`. Spawn a blind agent — it sees only the contract, `features.md`, and the user stories, never the interview or the design. It checks:
 
 - Every user story is covered by the contract.
 - Every endpoint has a matching screen, or is marked internal.
 - Every business rule is checkable, not descriptive.
-- No negative or prohibition language appears anywhere in the contract.
+- Every business rule and endpoint has a matching, plain-language function in `features.md`.
+- No negative or prohibition language appears anywhere in the contract or `features.md`.
 
 Pass moves straight to `autobuild:implement` — call the Skill tool with that id. Fail returns to Step 4 with the findings.

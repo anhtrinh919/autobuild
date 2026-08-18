@@ -4,6 +4,8 @@
 
 This file, the design brief, and `prd.md` are the whole brief a fresh session gets to build this phase.
 
+This phase's contract only. A decision here does not apply to any other phase.
+
 ## Data model
 
 One entity per block. Each field with its type and the rule it follows.

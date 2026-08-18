@@ -5,7 +5,7 @@ description: Verifies, audits, dogfoods, and finishes a phase's code, then logs 
 
 # Wrap
 
-Per phase, for verify, audit, dogfood, and finish. Reads the phase's diff, `spec/<phase>/contract.md`, `spec/<phase>/user-stories.md`, and `prd.md`.
+Per phase, for verify, audit, dogfood, and finish. Reads the phase's diff, `spec/<phase>/contract.md`, `spec/<phase>/user-stories.md`, and `prd.md` — never another phase's `spec/`.
 
 Writes to `changelog.md` and `backlog.md` at the project root — shared across every phase.
 

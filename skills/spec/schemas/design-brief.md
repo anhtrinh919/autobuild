@@ -4,6 +4,8 @@
 
 No style guide, layout, or design system. That call belongs to the designer, not this brief.
 
+This phase's screens only. A choice here does not apply to any other phase.
+
 ## Context
 
 What this phase adds, why it is next, and the problem it solves for the user. As many paragraphs as the feature needs.

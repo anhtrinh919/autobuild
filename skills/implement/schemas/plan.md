@@ -2,6 +2,8 @@
 
 20 words a sentence. 2 sentences a line. An agent reads this — keep it exact, not descriptive.
 
+This phase's plan only. A decision here does not apply to any other phase.
+
 ## Approach
 
 One paragraph. The shape of the solution, and why the files break down this way.

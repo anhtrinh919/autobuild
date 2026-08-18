@@ -23,6 +23,7 @@ if spec_dir.is_dir():
             "user_stories": (phase_dir / "user-stories.md").exists(),
             "design_brief": (phase_dir / "design-brief.md").exists(),
             "contract": (phase_dir / "contract.md").exists(),
+            "features": (phase_dir / "features.md").exists(),
             "plan": (phase_dir / "plan.md").exists(),
         }
 

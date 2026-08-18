@@ -5,7 +5,7 @@ description: Turns a phase's contract into working, tested code through a task p
 
 # Implement
 
-Per phase only. Reads `spec/<phase>/contract.md`, `spec/<phase>/design-brief.md`, `spec/<phase>/user-stories.md`, and `prd.md`.
+Per phase only. Reads `spec/<phase>/contract.md`, `spec/<phase>/features.md`, `spec/<phase>/design-brief.md`, `spec/<phase>/user-stories.md`, and `prd.md` — never another phase's `spec/`.
 
 - Step: one unit of work.
 - Gate: the check at the end of a step.
@@ -46,9 +46,10 @@ Record positive facts only. Never write "never X" or "out of scope" into the doc
 
 Gate: `spec/<phase>/plan.md` exists, and matches the approved plan.
 
-Spawn a blind agent — it sees only `spec/<phase>/plan.md` and `spec/<phase>/contract.md`, never this session's planning conversation. It checks completeness, spec alignment, task decomposition, and buildability:
+Spawn a blind agent — it sees only `spec/<phase>/plan.md`, `spec/<phase>/contract.md`, and `spec/<phase>/features.md`, never this session's planning conversation. It checks completeness, spec alignment, task decomposition, and buildability:
 
 - Every contract line maps to a task.
+- Every function in `features.md` is honored by some task — what the user approved is what gets built.
 - Every task matches the contract — nothing invented, nothing missing.
 - Each task is small, ordered, and can finish and commit on its own.
 - Every task's test, run, and commit fields are concrete, not descriptive.
@@ -58,6 +59,10 @@ Gate: the blind reviewer finds nothing to flag, or every finding is fixed and it
 ## Step 2 — Build
 
 For each task, in order:
+
+Resuming after a break? Check `plan.md`'s tasks against the branch's git log — a task whose commit message is already there is done.
+
+Start from the first task that isn't.
 
 Batch two or more small, same-shape tasks into one dispatch — one implement-review cycle, not one per task. A task with a real design decision or cross-file risk still gets its own cycle.
 

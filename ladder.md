@@ -1,6 +1,6 @@
 # ladder.md
 
-15 words a sentence. Read this first, in every skill, to see where you sit.
+20 words a sentence. 2 sentences a line. Read this first, in every skill, to see where you sit.
 
 ```mermaid
 flowchart TD
@@ -33,3 +33,7 @@ flowchart TD
 ```
 
 Solid lines are the main loop. Dashed lines are on demand — a pivot, a drain, a one-time bridge.
+
+Resuming after a break? `state.json`, at the project root, says which docs already exist.
+
+Whatever's missing is next, build it, in this order.
