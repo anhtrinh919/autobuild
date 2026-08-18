@@ -5,7 +5,7 @@ description: Verifies, audits, dogfoods, and finishes a phase's code, then logs 
 
 # Wrap
 
-Per phase, for verify, audit, dogfood, and finish. Reads the phase's diff, `spec/<phase>/contract.md`, and `spec/<phase>/user-stories.md`.
+Per phase, for verify, audit, dogfood, and finish. Reads the phase's diff, `spec/<phase>/contract.md`, `spec/<phase>/user-stories.md`, and `prd.md`.
 
 Writes to `changelog.md` and `backlog.md` at the project root — shared across every phase.
 
@@ -14,6 +14,8 @@ Writes to `changelog.md` and `backlog.md` at the project root — shared across 
 - Pass a gate → move to the next step.
 - Fail a gate → redo the step, using the gate's findings.
 - Fail the same gate twice → stop, ask the user.
+
+Read `${CLAUDE_PLUGIN_ROOT}/ladder.md` first — it shows where this skill sits in the whole stack.
 
 ## Step 1 — Verify
 
@@ -45,7 +47,7 @@ Full tier — agentic, driven live through `/browse` — applies only when:
 
 - a flow spans multiple steps an outside check can't observe
 - correctness is genuinely visual or interaction-only: drag-and-drop, layout, animation
-- this is the roadmap's final phase
+- `prd.md`'s Roadmap shows this is the final phase
 - the user asks for it directly
 
 Spawn a dogfood subagent for the full tier. It drives the running app through `/browse`, blind to the repo, and reports what it walked, what broke, and what it never reached.
@@ -68,6 +70,8 @@ Present four options, and only these four:
 - discard this work
 
 Discard needs a typed "discard" back before it runs.
+
+Follow `docs/git-workflow.md` for the worktree's fate, matching the choice above.
 
 Gate: show the four options. Get the user's choice.
 
@@ -102,4 +106,4 @@ Spawn a blind agent — it sees only those, never the audit or the dogfood repor
 - A fresh read of the diff turns up no Critical or Important finding.
 - No negative or prohibition language appears in the changelog or backlog.
 
-Pass moves to `explore` for the next phase, or ends the roadmap if this was the last one. Fail returns to Step 2 with the findings.
+Check `prd.md`'s Roadmap for what comes next. Pass moves to `autobuild:explore` for the next phase — call the Skill tool with that id — or ends the roadmap if this was the last one. Fail returns to Step 2 with the findings.

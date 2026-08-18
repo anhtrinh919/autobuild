@@ -18,6 +18,8 @@ Per phase only. Reads `spec/<phase>/contract.md`, `spec/<phase>/design-brief.md`
   - an action outside this workspace — merge, push, publish
   - a plan too broken to guess a path through
 
+Read `${CLAUDE_PLUGIN_ROOT}/ladder.md` first — it shows where this skill sits in the whole stack.
+
 ## Step 1 — Plan
 
 Enter plan mode.
@@ -35,6 +37,8 @@ Gate: grep the plan for "TBD", "TODO", "similar to", or "add appropriate" — ze
 Gate: every contract line maps to a task, checked one by one.
 
 Exit plan mode. This is the plan's approval gate.
+
+Follow `docs/git-workflow.md` to create this phase's branch and worktree, before Step 2 starts.
 
 Once approved, write the plan to `spec/<phase>/plan.md`, following `schemas/plan.md` — the plan-mode file does not survive past this session.
 
@@ -146,4 +150,4 @@ Spawn a blind agent — it sees only the contract and the diff, never the plan o
 - Every endpoint in the contract works end to end.
 - Nothing in the diff is missing from the plan, or added beyond it.
 
-Pass moves straight to `wrap`. Fail returns to Step 2 with the findings.
+Pass moves straight to `autobuild:wrap` — call the Skill tool with that id. Fail returns to Step 2 with the findings.

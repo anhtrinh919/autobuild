@@ -15,6 +15,8 @@ Global runs once, for the whole product, and writes `prd.md`. Per-phase runs aga
 - Fail a gate → redo the step, using the gate's findings.
 - Fail the same gate twice → stop, ask the user.
 
+Read `${CLAUDE_PLUGIN_ROOT}/ladder.md` first — it shows where this skill sits in the whole stack.
+
 ## Step 1 — Ground
 
 Find 3 to 5 real comparable products, not the whole category — actual products people use today.
@@ -23,9 +25,15 @@ For each, note what it does well, what it does badly, and the gap it leaves.
 
 Name the gap this idea could fill. That gap grounds the interview, not a general impression of the market.
 
+Per-phase mode also reads `prd.md` — the concept, north star, roadmap, and assumptions ground this phase's interview.
+
+If a settled fact in `prd.md` no longer holds — the last phase shipped different from its roadmap line, an assumption proved false — correct it in place, now. This is a routine correction, not a pivot; a real change of direction belongs in `replan`, not here.
+
 Per-phase mode also reads `backlog.md` at the project root, if one exists. It carries items a previous phase's wrap logged.
 
 Gate: name at least 3 real comparable products, each with its gap.
+
+Gate: per-phase mode only — `prd.md` matches current reality, or was corrected.
 
 ## Step 2 — Grill the shape
 
@@ -160,4 +168,4 @@ Gate on this run's doc — `prd.md` for global, `spec/<phase>/user-stories.md` f
 - Per-phase mode only: an approved feature-phase item appears once in `prd.md`'s Roadmap.
 - No negative or prohibition language appears anywhere in the doc — no "never X," no "out of scope."
 
-Pass moves straight to `spec`. Fail returns here with the findings.
+Pass moves straight to `autobuild:spec` — call the Skill tool with that id. Fail returns here with the findings.

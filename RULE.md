@@ -27,6 +27,8 @@ Writing style and shared vocabulary for every autobuild skill file.
   - Fail a gate → redo the step, using the gate's findings.
   - Fail the same gate twice → stop, ask the user.
 - `implement/SKILL.md`'s copy of this block differs by design — its fix-loop rules on failures instead of stalling on them. Read it there, not here.
+- Every skill file opens with one line, right after the step/gate block: read `ladder.md` first, to see where this skill sits in the whole stack.
+- A handoff to another skill always names its real qualified id (`autobuild:<name>`) and says to call the Skill tool with it. A bare skill name is not a handoff.
 - A decision is felt if the user would notice it, wait on it, or feel boxed in by it. Ask only felt decisions.
 - Decide plumbing decisions yourself. Record only the settled fact, not the alternatives you considered.
 - A mechanism earns a sequence diagram when at least two hold:

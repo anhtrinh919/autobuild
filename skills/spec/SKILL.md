@@ -13,6 +13,8 @@ Per phase only. Reads `spec/<phase>/user-stories.md` and `prd.md`.
 - Fail a gate → redo the step, using the gate's findings.
 - Fail the same gate twice → stop, ask the user.
 
+Read `${CLAUDE_PLUGIN_ROOT}/ladder.md` first — it shows where this skill sits in the whole stack.
+
 ## Step 1 — Ground
 
 Dispatch a sub-agent. It looks at 2 to 3 real apps that solve this specific feature, not the whole product.
@@ -111,4 +113,4 @@ Gate on `spec/<phase>/contract.md`. Spawn a blind agent — it sees only the con
 - Every business rule is checkable, not descriptive.
 - No negative or prohibition language appears anywhere in the contract.
 
-Pass moves straight to `implement`. Fail returns to Step 4 with the findings.
+Pass moves straight to `autobuild:implement` — call the Skill tool with that id. Fail returns to Step 4 with the findings.
