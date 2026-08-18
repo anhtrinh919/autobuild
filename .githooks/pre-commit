@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# Auto-bumps .claude-plugin/plugin.json's patch version on every commit that
+# touches more than just plugin.json itself (a manual version edit is left alone).
+set -euo pipefail
+
+PLUGIN_JSON=".claude-plugin/plugin.json"
+
+if [ ! -f "$PLUGIN_JSON" ]; then
+  exit 0
+fi
+
+other_staged=$(git diff --cached --name-only | grep -v "^${PLUGIN_JSON}$" || true)
+if [ -z "$other_staged" ]; then
+  exit 0
+fi
+
+current=$(python3 -c "import json; print(json.load(open('$PLUGIN_JSON'))['version'])")
+IFS='.' read -r major minor patch <<< "$current"
+new_version="${major}.${minor}.$((patch + 1))"
+
+python3 - "$PLUGIN_JSON" "$new_version" <<'PY'
+import json, sys
+path, new_version = sys.argv[1], sys.argv[2]
+data = json.load(open(path))
+data["version"] = new_version
+with open(path, "w") as f:
+    json.dump(data, f, indent=2)
+    f.write("\n")
+PY
+
+git add "$PLUGIN_JSON"
+echo "Bumped plugin version: ${current} -> ${new_version}"
