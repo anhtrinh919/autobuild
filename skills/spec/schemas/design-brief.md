@@ -15,9 +15,7 @@ What this phase adds, why it is next, and the problem it solves for the user. As
 One block per screen, numbered — this phase's full scope:
 
 - `<N>. <screen name>` — <why a user lands here, and what changes for them>
+  - Story: <the user story this screen serves>
   - States: <loading, empty, error, and the normal case>
   - Primary action: <what a user does here>
-
-## Copy
-
-Real text as it appears on screen, not a placeholder. One line per string.
+  - Copy: <every real string this screen shows, one per line, not a placeholder>
