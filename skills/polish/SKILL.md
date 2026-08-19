@@ -1,6 +1,6 @@
 ---
 name: polish
-description: Drains the backlog — collects new tickets from any source, groups them into one small shippable batch, and ships it. Trigger on /autobuild:polish, or whenever the user hands over a batch of bugs or tickets, wants to clear the backlog, or asks to knock out some small fixes.
+description: Drains the backlog — collects new items from any source, groups them into one small shippable batch, and ships it. Trigger on /autobuild:polish, or whenever the user hands over a batch of bugs or items, wants to clear the backlog, or asks to knock out some small fixes.
 ---
 
 # Polish
@@ -17,7 +17,7 @@ Never auto-fired. The user invokes this directly, whenever they want the backlog
 
 ## Step 1 — Collect
 
-The user hands over tickets in whatever form they have them — pasted, an exported file, a `.md`, a URL. Read whatever's given.
+The user hands over items in whatever form they have them — pasted, an exported file, a `.md`, a URL. Read whatever's given.
 
 Log each item to `backlog.md`, under Bugs, Improvements, or Feature phases, following `schemas/backlog.md`.
 
@@ -41,7 +41,7 @@ Gate: every item in the batch touches different files, or the same file in a way
 
 Work on a `polish-<date>` branch.
 
-For each item, follow Implement's own TDD method. Name the break, write one failing test, then the smallest fix.
+For each item, follow Implement's own test-first method. Name the break, write one failing test, then the smallest fix.
 
 Run the mutation check before it counts as done.
 
@@ -63,7 +63,7 @@ Gate: the state script ran clean. The commit succeeded.
 
 Build only from the steps above.
 
-Gate on the diff, `changelog.md`, and `backlog.md`. Spawn a blind agent — it sees only those, never the original tickets. It checks:
+Gate on the diff, `changelog.md`, and `backlog.md`. Spawn a blind agent — it sees only those, never the original items. It checks:
 
 - Every item the changelog claims was drained has a real, matching change in the diff.
 - Every closed backlog item is actually addressed by the diff.

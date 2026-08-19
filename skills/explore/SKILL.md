@@ -61,7 +61,7 @@ Number each question. Give your recommended answer. Use this format:
 ```mermaid
 flowchart LR
     compute[Compute the frontier] --> fact{Needs a fact\nfrom outside?}
-    fact -->|yes| dispatch[Dispatch a sub-agent\nnon-blocking]
+    fact -->|yes| dispatch[Dispatch a subagent\nnon-blocking]
     fact -->|no| ask[Ask the frontier]
     dispatch -->|rest of frontier| ask
     ask --> wait[Wait for the user's answers]

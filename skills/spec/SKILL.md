@@ -17,7 +17,7 @@ Read `${CLAUDE_PLUGIN_ROOT}/ladder.md` first — it shows where this skill sits 
 
 ## Step 1 — Ground
 
-Dispatch a sub-agent. It looks at 2 to 3 real apps that solve this specific feature, not the whole product.
+Dispatch a subagent. It looks at 2 to 3 real apps that solve this specific feature, not the whole product.
 
 It reads app-store reviews, competitor help docs, and a demo walkthrough for each app. When a free trial exists, it walks the flow itself with `/browse`.
 
