@@ -34,6 +34,6 @@ flowchart TD
 
 Solid lines are the main loop. Dashed lines are on demand — a pivot, a drain, a one-time bridge.
 
-Resuming after a break? `state.json`, at the project root, says which docs already exist.
+Resuming after a break, or starting fresh? Call `autobuild:autobuild` — it reads `state.json` and hands off to whichever skill comes next.
 
 Whatever's missing is next, build it, in this order.
