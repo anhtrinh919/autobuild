@@ -27,7 +27,7 @@ Gate: every item handed over appears in `backlog.md`, once each, in the right ca
 
 ## Step 2 — Ground
 
-For any item whose fix isn't obvious, do a light research pass. Same discipline as Spec's Ground, scaled down — 1 or 2 comparable cases, not a full teardown.
+For any item whose fix isn't obvious, do a light research pass. Look at 1 or 2 comparable cases, not a full teardown — the same discipline as Spec's Ground, scaled down.
 
 Gate: every item chosen for this batch has a clear, checkable fix in mind.
 
@@ -70,3 +70,5 @@ Gate on the diff, `changelog.md`, and `backlog.md`. Spawn a blind agent — it s
 - No negative or prohibition language appears in the changelog or backlog.
 
 Pass ends this run — polish has no next skill to call. Fail returns to Step 4 with the findings.
+
+Fail this gate twice → stop, ask the user.

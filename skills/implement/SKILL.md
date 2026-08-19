@@ -156,3 +156,5 @@ Spawn a blind agent — it sees only the contract and the diff, never the plan o
 - Nothing in the diff is missing from the plan, or added beyond it.
 
 Pass moves straight to `autobuild:wrap` — call the Skill tool with that id. Fail returns to Step 2 with the findings.
+
+Fail this gate twice → rule on it yourself, and keep going. Log the ruling, and its cost if you're wrong, in the fix's commit message.

@@ -115,7 +115,7 @@ Map the interview tree for everything the shape left open:
 - Global mode: user stories, functional requirements, non-functional requirements, assumptions and constraints, roadmap, when it is done.
 - Per-phase mode: this phase's user stories, in full.
 
-Same loop as Step 2, computed against this frontier instead.
+Ask this frontier the same way — one round, split felt versus plumbing, looped until it's empty.
 
 Per-phase mode folds in one question per backlog item:
 
@@ -168,4 +168,6 @@ Gate on this run's doc — `prd.md` for global, `spec/<phase>/user-stories.md` f
 - Per-phase mode only: an approved feature-phase item appears once in `prd.md`'s Roadmap.
 - No negative or prohibition language appears anywhere in the doc — no "never X," no "out of scope."
 
-Pass moves straight to `autobuild:spec` — call the Skill tool with that id. Fail returns here with the findings.
+Pass moves straight to `autobuild:spec` — call the Skill tool with that id. Fail returns to Step 3 with the findings.
+
+Fail this gate twice → stop, ask the user.

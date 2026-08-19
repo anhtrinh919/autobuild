@@ -67,3 +67,5 @@ Build only from the steps above.
 Gate on the outcome: the archived path has everything the live project had, tagged and dated. The fresh path is empty except `.git` and one `changelog.md` entry.
 
 Pass moves to `autobuild:explore` — call the Skill tool with that id, global mode. Fail returns to Step 1 with the findings.
+
+Fail this gate twice → stop, ask the user.

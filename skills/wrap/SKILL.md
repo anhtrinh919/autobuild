@@ -27,11 +27,11 @@ Gate: zero tests fail.
 
 Spawn a code-review subagent over the phase's full diff. Never review your own code.
 
-Fix every Critical and Important finding now. A Minor finding, or one outside this phase's stories, goes to `backlog.md` instead of blocking here.
+Fix every HIGH finding now. A MEDIUM or LOW finding, or one outside this phase's stories, goes to `backlog.md` instead of blocking here.
 
-A felt Minor finding is never auto-backlogged — one the user would notice, wait on, or feel boxed in by. Surface it; the user picks fix-now or backlog.
+A felt MEDIUM or LOW finding is never auto-backlogged — one the user would notice, wait on, or feel boxed in by. Surface it; the user picks fix-now or backlog.
 
-Gate: zero Critical or Important findings remain unresolved.
+Gate: zero HIGH findings remain unresolved.
 
 ## Step 3 — Dogfood
 
@@ -103,7 +103,9 @@ Spawn a blind agent — it sees only those, never the audit or the dogfood repor
 
 - The changelog entry matches what the diff actually did.
 - Every backlog entry names a real, specific gap, not a vague worry.
-- A fresh read of the diff turns up no Critical or Important finding.
+- A fresh read of the diff turns up no HIGH finding.
 - No negative or prohibition language appears in the changelog or backlog.
 
 Check `prd.md`'s Roadmap for what comes next. Pass moves to `autobuild:explore` for the next phase — call the Skill tool with that id — or ends the roadmap if this was the last one. Fail returns to Step 2 with the findings.
+
+Fail this gate twice → stop, ask the user.

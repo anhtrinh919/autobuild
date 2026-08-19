@@ -46,7 +46,7 @@ For the current phase, map:
 - `design-brief.md` (external track) → `design-brief.md`
 - `plan.md` → `plan.md`
 
-Same rewrite discipline as Step 2. Every migrated line meets autobuild's own caps, not the old stack's.
+Rewrite every migrated line to autobuild's own word and sentence caps, and its positive-facts-only rule — the same discipline as Step 2.
 
 Gate: the current phase has its matching `spec/<phase>/` directory. Each schema's sections are present, each line under its own cap.
 
@@ -79,3 +79,7 @@ Gate on `prd.md` and the current phase's migrated `spec/<phase>/`. Spawn a blind
 - Every section of every migrated doc meets its own word and sentence cap.
 - No negative or prohibition language survived the migration.
 - The current phase has a matching `spec/<phase>/` on this side. No older phase was migrated.
+
+Pass moves to `autobuild:autobuild` — call the Skill tool with that id, to hand off to whichever skill comes next. Fail returns to Step 2 with the findings.
+
+Fail this gate twice → stop, ask the user.

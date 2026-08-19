@@ -121,3 +121,5 @@ Gate on `spec/<phase>/contract.md` and `spec/<phase>/features.md`. Spawn a blind
 - No negative or prohibition language appears anywhere in the contract or `features.md`.
 
 Pass moves straight to `autobuild:implement` — call the Skill tool with that id. Fail returns to Step 4 with the findings.
+
+Fail this gate twice → stop, ask the user.
