@@ -122,4 +122,4 @@ Gate on `spec/<phase>/contract.md` and `spec/<phase>/features.md`. Spawn a blind
 
 Pass moves straight to `autobuild:implement` — call the Skill tool with that id. Fail returns to Step 4 with the findings.
 
-Fail this gate twice → stop, ask the user.
+Fix what it finds, once, then move on — it never runs a second time to confirm. Ask the user only if a finding itself is unclear.

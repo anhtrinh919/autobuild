@@ -68,4 +68,4 @@ Gate on the outcome: the archived path has everything the live project had, tagg
 
 Pass moves to `autobuild:explore` — call the Skill tool with that id, global mode. Fail returns to Step 1 with the findings.
 
-Fail this gate twice → stop, ask the user.
+Fix what it finds, once, then move on — it never runs a second time to confirm. Ask the user only if a finding itself is unclear.

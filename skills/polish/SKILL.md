@@ -71,4 +71,4 @@ Gate on the diff, `changelog.md`, and `backlog.md`. Spawn a blind agent — it s
 
 Pass ends this run — polish has no next skill to call. Fail returns to Step 4 with the findings.
 
-Fail this gate twice → stop, ask the user.
+Fix what it finds, once, then move on — it never runs a second time to confirm. Ask the user only if a finding itself is unclear.

@@ -82,4 +82,4 @@ Gate on `prd.md` and the current phase's migrated `spec/<phase>/`. Spawn a blind
 
 Pass moves to `autobuild:autobuild` — call the Skill tool with that id, to hand off to whichever skill comes next. Fail returns to Step 2 with the findings.
 
-Fail this gate twice → stop, ask the user.
+Fix what it finds, once, then move on — it never runs a second time to confirm. Ask the user only if a finding itself is unclear.

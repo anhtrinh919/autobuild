@@ -108,4 +108,4 @@ Spawn a blind agent — it sees only those, never the audit or the dogfood repor
 
 Check `prd.md`'s Roadmap for what comes next. Pass moves to `autobuild:explore` for the next phase — call the Skill tool with that id — or ends the roadmap if this was the last one. Fail returns to Step 2 with the findings.
 
-Fail this gate twice → stop, ask the user.
+Fix what it finds, once, then move on — it never runs a second time to confirm. Ask the user only if a finding itself is unclear.

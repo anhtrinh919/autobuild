@@ -170,4 +170,4 @@ Gate on this run's doc — `prd.md` for global, `spec/<phase>/user-stories.md` f
 
 Pass moves straight to `autobuild:spec` — call the Skill tool with that id. Fail returns to Step 3 with the findings.
 
-Fail this gate twice → stop, ask the user.
+Fix what it finds, once, then move on — it never runs a second time to confirm. Ask the user only if a finding itself is unclear.
