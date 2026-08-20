@@ -19,11 +19,11 @@ Read `${CLAUDE_PLUGIN_ROOT}/ladder.md` first — it shows where this skill sits 
 
 ## Step 1 — Ground
 
-Find 3 to 5 real comparable products, not the whole category — actual products people use today.
+Dispatch `crawler`. It finds 3 to 5 real comparable products, not the whole category — actual products people use today.
 
-For each, note what it does well, what it does badly, and the gap it leaves.
+For each, it notes what it does well, what it does badly, and the gap it leaves. Wait for it before Step 2 starts.
 
-Name the gap this idea could fill. That gap grounds the interview, not a general impression of the market.
+Name the gap this idea could fill, from what it found. That gap grounds the interview, not a general impression of the market.
 
 Per-phase mode also reads `prd.md` — the concept, north star, roadmap, and assumptions ground this phase's interview.
 
@@ -61,7 +61,7 @@ Number each question. Give your recommended answer. Use this format:
 ```mermaid
 flowchart LR
     compute[Compute the frontier] --> fact{Needs a fact\nfrom outside?}
-    fact -->|yes| dispatch[Dispatch a subagent\nnon-blocking]
+    fact -->|yes| dispatch[Dispatch `crawler`\nnon-blocking]
     fact -->|no| ask[Ask the frontier]
     dispatch -->|rest of frontier| ask
     ask --> wait[Wait for the user's answers]
@@ -72,7 +72,9 @@ flowchart LR
     confirm --> next([Step 3])
 ```
 
-Find facts yourself. Never ask the user for one you could look up. Keep searching the web as new branches appear.
+Dispatch `crawler` for any fact you'd otherwise ask the user. Never ask for one you could look up.
+
+Keep dispatching it as new branches appear.
 
 Gate: recompute the frontier — it returns zero items. Every shape item above is settled.
 
@@ -123,7 +125,9 @@ Per-phase mode folds in one question per backlog item:
 - propose it as a new roadmap phase
 - leave it for later
 
-Find facts yourself. Never ask the user for one you could look up. Keep searching the web as new branches appear.
+Dispatch `crawler` for any fact you'd otherwise ask the user. Never ask for one you could look up.
+
+Keep dispatching it as new branches appear.
 
 Gate: recompute the frontier — it returns zero items. Every section above has one settled decision behind it.
 

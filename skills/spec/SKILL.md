@@ -17,15 +17,17 @@ Read `${CLAUDE_PLUGIN_ROOT}/ladder.md` first — it shows where this skill sits 
 
 ## Step 1 — Ground
 
-Dispatch a subagent. It looks at 2 to 3 real apps that solve this specific feature, not the whole product.
+Dispatch `crawler`. It finds real apps that solve this specific feature, not the whole product.
 
-It reads app-store reviews, competitor help docs, and a demo walkthrough for each app. When a free trial exists, it walks the flow itself with `/browse`.
+It reads their app-store reviews and competitor help docs for each one.
 
-For each app, it counts the user's steps, and notes every decision point and point of friction.
+When a free trial exists, walk its flow yourself with `/browse` — crawler can't.
 
-Wait for it before writing anything. Ground the brief in what it found — never reconcile the brief against it after.
+For each app, count the user's steps, and note every decision point and point of friction.
 
-Gate: name 2 to 3 real comparable features, each with its step count and one friction point.
+Wait for `crawler` before writing anything. Ground the brief in what both found — never reconcile the brief against it after.
+
+Gate: name every real comparable feature found, each with its step count and one friction point.
 
 ## Step 2 — Brief
 

@@ -27,7 +27,7 @@ Gate: every item handed over appears in `backlog.md`, once each, in the right ca
 
 ## Step 2 — Ground
 
-For any item whose fix isn't obvious, do a light research pass. Look at 1 or 2 comparable cases, not a full teardown — the same discipline as Spec's Ground, scaled down.
+For any item whose fix isn't obvious, dispatch `crawler` for a light research pass. Look at 1 or 2 comparable cases, not a full teardown — the same discipline as Spec's Ground, scaled down.
 
 Gate: every item chosen for this batch has a clear, checkable fix in mind.
 
