@@ -77,7 +77,7 @@ Build only from the steps above.
 Gate on `prd.md` and the current phase's migrated `spec/<phase>/`. Spawn a blind agent — it sees only the migrated docs, never the old-stack originals. It checks:
 
 - Every section of every migrated doc meets its own word and sentence cap.
-- No negative or prohibition language survived the migration.
+- No sentence that excludes or forbids something survived the migration. "Never fails" and "nothing to install" state a fact, not an exclusion.
 - The current phase has a matching `spec/<phase>/` on this side. No older phase was migrated.
 
 Pass moves to `autobuild:autobuild` — call the Skill tool with that id, to hand off to whichever skill comes next. Fail returns to Step 2 with the findings.

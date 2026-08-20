@@ -27,7 +27,7 @@ Gate: zero tests fail.
 
 Spawn a code-review subagent over the phase's full diff. Never review your own code.
 
-Fix every HIGH finding now. A MEDIUM or LOW finding, or one outside this phase's stories, goes to `backlog.md` instead of blocking here.
+Fix every HIGH finding now. A MEDIUM or LOW finding, or one outside this phase's stories, needs the user's OK before it goes to `backlog.md`, instead of blocking here.
 
 A felt MEDIUM or LOW finding is never auto-backlogged — one the user would notice, wait on, or feel boxed in by. Surface it; the user picks fix-now or backlog.
 
@@ -54,7 +54,7 @@ Spawn a dogfood subagent for the full tier. It drives the running app through `/
 
 Derive either tier's checks from this phase's own stories, not from the shipped code.
 
-Fix every break on a user story's path now. A rough edge outside this phase's stories goes to `backlog.md` instead.
+Fix every break on a user story's path now. A rough edge outside this phase's stories needs the user's OK before it goes to `backlog.md`, instead.
 
 Same felt-impact fork as Audit — a felt rough edge is never silently backlogged. Surface it; the user picks fix-now or backlog.
 
@@ -83,7 +83,7 @@ Skip this step if the work was discarded.
 
 Append one changelog entry for this phase to `changelog.md`, following `schemas/changelog.md`. Append any backlog item logged during Audit or Dogfood to `backlog.md`, following `schemas/backlog.md`.
 
-Record positive facts only. Never write "never X" or "out of scope" into either doc.
+Record positive facts only. A negating word stating a capability — "never fails," "nothing to install" — is not an exclusion.
 
 Gate: the changelog entry names what changed, in the categories the schema gives. Every item logged during this run appears in the backlog, once each.
 
@@ -104,7 +104,7 @@ Spawn a blind agent — it sees only those, never the audit or the dogfood repor
 - The changelog entry matches what the diff actually did.
 - Every backlog entry names a real, specific gap, not a vague worry.
 - A fresh read of the diff turns up no HIGH finding.
-- No negative or prohibition language appears in the changelog or backlog.
+- No sentence in the changelog or backlog excludes or forbids something. "Never fails" and "nothing to install" state a fact, not an exclusion.
 
 Check `prd.md`'s Roadmap for what comes next. Pass moves to `autobuild:explore` for the next phase — call the Skill tool with that id — or ends the roadmap if this was the last one. Fail returns to Step 2 with the findings.
 

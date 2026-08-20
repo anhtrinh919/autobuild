@@ -48,7 +48,7 @@ Split the frontier before you ask it. Ask only felt decisions — ones the user 
 
 Decide plumbing decisions yourself — ones the user would never notice either way. Record each as a settled fact, not a question.
 
-An item raised but not settled this round may still have real value. If so, log it to `backlog.md` as a future possibility, never a rejection.
+An item raised but not settled this round may still have real value. Ask about it in this round; log it to `backlog.md` only if the user says yes.
 
 Nothing with no future value gets written down at all.
 
@@ -84,7 +84,7 @@ The user says yes to the shared understanding.
 
 Write the settled shape, using only what it settled.
 
-Record positive facts only. Never write "never X" or "out of scope" into the doc.
+Record positive facts only. A negating word stating a capability — "never fails," "nothing to install" — is not an exclusion.
 
 Global mode writes two things.
 
@@ -135,7 +135,7 @@ The user says yes to the shared understanding.
 
 Write the rest of `prd.md` from the settled tree, following `schemas/prd.md`. Concept, north star, and target users are already there from Step 3.
 
-Record positive facts only. Never write "never X" or "out of scope" into the doc.
+Record positive facts only. A negating word stating a capability — "never fails," "nothing to install" — is not an exclusion.
 
 Per-phase mode appends the stories to `spec/<phase>/user-stories.md`, following `schemas/user-stories.md`. The Scope section is already there from Step 3.
 
@@ -166,7 +166,7 @@ Gate on this run's doc — `prd.md` for global, `spec/<phase>/user-stories.md` f
 - Global mode only: every section is present, grounded in a settled decision.
 - Global mode only: every "When is done" criterion is checkable, and names a real motivation.
 - Per-phase mode only: an approved feature-phase item appears once in `prd.md`'s Roadmap.
-- No negative or prohibition language appears anywhere in the doc — no "never X," no "out of scope."
+- No sentence in the doc excludes or forbids something. "Never fails" and "nothing to install" state a fact, not an exclusion.
 
 Pass moves straight to `autobuild:spec` — call the Skill tool with that id. Fail returns to Step 3 with the findings.
 

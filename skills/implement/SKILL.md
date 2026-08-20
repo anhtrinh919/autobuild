@@ -42,7 +42,7 @@ Follow `docs/git-workflow.md` to create this phase's branch and worktree, before
 
 Once approved, write the plan to `spec/<phase>/plan.md`, following `schemas/plan.md` — the plan-mode file does not survive past this session.
 
-Record positive facts only. Never write "never X" or "out of scope" into the doc.
+Record positive facts only. A negating word stating a capability — "never fails," "nothing to install" — is not an exclusion.
 
 Gate: `spec/<phase>/plan.md` exists, and matches the approved plan.
 

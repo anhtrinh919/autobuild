@@ -31,7 +31,7 @@ Gate: name 2 to 3 real comparable features, each with its step count and one fri
 
 Write `spec/<phase>/design-brief.md`, following `schemas/design-brief.md`.
 
-Record positive facts only. Never write "never X" or "out of scope" into the doc.
+Record positive facts only. A negating word stating a capability — "never fails," "nothing to install" — is not an exclusion.
 
 Give the designer real context: the feature, why it matters to the user, the user stories it serves, and every screen this phase touches — its states, its primary action, and why it exists.
 
@@ -55,7 +55,7 @@ Gate: the design exists — mockups or images, handed back by the user.
 
 Write `spec/<phase>/contract.md`, following `schemas/contract.md`, from the design, the user stories, and `prd.md`.
 
-Record positive facts only. Never write "never X" or "out of scope" into the doc.
+Record positive facts only. A negating word stating a capability — "never fails," "nothing to install" — is not an exclusion.
 
 This file, the design brief, and `prd.md` are the whole context a fresh session gets to build this phase.
 
@@ -96,7 +96,7 @@ Gate: all six hold. Fix any that do not before moving on.
 
 Write `spec/<phase>/features.md`, following `schemas/features.md` — every business rule and endpoint in `contract.md`, translated to plain language. No API, no data model, no code.
 
-Record positive facts only. Never write "never X" or "out of scope" into the doc.
+Record positive facts only. A negating word stating a capability — "never fails," "nothing to install" — is not an exclusion.
 
 Gate: every business rule and endpoint in `contract.md` traces to exactly one function in `features.md`.
 
@@ -118,7 +118,7 @@ Gate on `spec/<phase>/contract.md` and `spec/<phase>/features.md`. Spawn a blind
 - Every endpoint has a matching screen, or is marked internal.
 - Every business rule is checkable, not descriptive.
 - Every business rule and endpoint has a matching, plain-language function in `features.md`.
-- No negative or prohibition language appears anywhere in the contract or `features.md`.
+- No sentence in the contract or `features.md` excludes or forbids something. "Never fails" and "nothing to install" state a fact, not an exclusion.
 
 Pass moves straight to `autobuild:implement` — call the Skill tool with that id. Fail returns to Step 4 with the findings.
 

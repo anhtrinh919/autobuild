@@ -50,7 +50,7 @@ Gate: the fresh path still has no `prd.md`. Nothing pre-loaded the interview.
 
 The fresh `changelog.md` opens with one `Pivoted` entry, naming the archived path and the reason.
 
-Record positive facts only. Never write "never X" or "out of scope" into the doc.
+Record positive facts only. A negating word stating a capability — "never fails," "nothing to install" — is not an exclusion.
 
 Gate: the entry names what changed and why, in `changelog.md`'s own format.
 

@@ -21,7 +21,7 @@ The user hands over items in whatever form they have them — pasted, an exporte
 
 Log each item to `backlog.md`, under Bugs, Improvements, or Feature phases, following `schemas/backlog.md`.
 
-Record positive facts only. Never write "never X" or "out of scope" into the doc.
+Record positive facts only. A negating word stating a capability — "never fails," "nothing to install" — is not an exclusion.
 
 Gate: every item handed over appears in `backlog.md`, once each, in the right category.
 
@@ -49,7 +49,7 @@ Run the full test suite once, fresh, after the whole batch — not per item.
 
 Commit. Close each drained item in `backlog.md` — rewritten to its closed form, not deleted. Append one changelog entry, following `schemas/changelog.md`.
 
-Record positive facts only. Never write "never X" or "out of scope" into either doc.
+Record positive facts only. A negating word stating a capability — "never fails," "nothing to install" — is not an exclusion.
 
 Gate: zero tests fail. Every item in the batch is closed in `backlog.md`, and named in the changelog.
 
@@ -67,7 +67,7 @@ Gate on the diff, `changelog.md`, and `backlog.md`. Spawn a blind agent — it s
 
 - Every item the changelog claims was drained has a real, matching change in the diff.
 - Every closed backlog item is actually addressed by the diff.
-- No negative or prohibition language appears in the changelog or backlog.
+- No sentence in the changelog or backlog excludes or forbids something. "Never fails" and "nothing to install" state a fact, not an exclusion.
 
 Pass ends this run — polish has no next skill to call. Fail returns to Step 4 with the findings.
 
