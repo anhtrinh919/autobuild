@@ -71,7 +71,7 @@ Present four options, and only these four:
 
 Discard needs a typed "discard" back before it runs.
 
-Follow `docs/git-workflow.md` for the worktree's fate, matching the choice above.
+Follow `docs/git-workflow.md` for the branch's fate, matching the choice above.
 
 Gate: show the four options. Get the user's choice.
 
