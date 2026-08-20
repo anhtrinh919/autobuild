@@ -68,13 +68,18 @@ Batch two or more small, same-shape tasks into one dispatch — one implement-re
 
 ```mermaid
 flowchart TD
-    implement[Implement the task inline —\nred, green, refactor] --> specreview[Spawn a fresh subagent:\nspec-compliance review]
-    specreview --> specok{Matches the task,\nnothing more, nothing less?}
-    specok -->|no| fix[Fix] --> specreview
-    specok -->|yes| commit[Commit] --> more{Tasks remain?}
-    more -->|yes| implement
-    more -->|no| next([Step 3])
+    start([Start batch]) --> outstanding{A prior batch's\nreview still open?}
+    outstanding -->|yes| resolve[Resolve it — fix,\nre-review, commit]
+    outstanding -->|no| implement
+    resolve --> implement[Implement this batch inline —\nred, green, refactor]
+    implement --> commit[Commit this batch]
+    commit --> dispatch[Dispatch this batch's\nreview, non-blocking]
+    dispatch --> more{Batches remain?}
+    more -->|yes| start
+    more -->|no| drain[Resolve this batch's\nreview — fix, commit] --> next([Step 3])
 ```
+
+Commit before dispatching review — the reviewer needs this batch's diff alone, never the next batch's too.
 
 Before writing a task's test, name the break: the exact production change that would make it fail. Confirm that change is a bug, not a design decision you're free to make differently.
 

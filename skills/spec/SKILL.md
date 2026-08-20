@@ -51,7 +51,15 @@ Hand the brief to the user. Wait — nothing runs while you wait.
 
 The user designs it: in this session with a design skill, or outside it with another tool. Either way, they hand back the result.
 
-Gate: the design exists — mockups or images, handed back by the user.
+Ask the user directly: does this design outrank the brief anywhere, or should it match the brief as written?
+
+Check the design against the brief, screen by screen.
+
+Outrank: rewrite `design-brief.md` in place, now, to match the design's actual mismatches.
+
+No: a mismatch found here is a miss, not a call. Fail this gate with it — same as any other finding.
+
+Gate: the design exists — mockups or images, handed back by the user. It matches the brief, or a mismatch was resolved one of the two ways above.
 
 ## Step 4 — Contract
 
