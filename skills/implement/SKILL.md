@@ -1,6 +1,6 @@
 ---
 name: implement
-description: Turns a phase's contract into working, tested code through a task plan and a strict test-first build loop. Waits for two-stage review before each task closes. Trigger on /autobuild:implement, right after spec's gate passes, or whenever the user asks to build, code, or ship a phase.
+description: Turns a phase's contract into working, tested code through a task plan and a strict test-first build loop. Waits for spec-compliance review before each task closes. Trigger on /autobuild:implement, right after spec's gate passes, or whenever the user asks to build, code, or ship a phase.
 ---
 
 # Implement
@@ -70,11 +70,8 @@ Batch two or more small, same-shape tasks into one dispatch — one implement-re
 flowchart TD
     implement[Implement the task inline —\nred, green, refactor] --> specreview[Spawn a fresh subagent:\nspec-compliance review]
     specreview --> specok{Matches the task,\nnothing more, nothing less?}
-    specok -->|no| fix1[Fix] --> specreview
-    specok -->|yes| qualreview[Spawn a fresh subagent:\ncode-quality review]
-    qualreview --> qualok{Approved?}
-    qualok -->|no| fix2[Fix] --> qualreview
-    qualok -->|yes| commit[Commit] --> more{Tasks remain?}
+    specok -->|no| fix[Fix] --> specreview
+    specok -->|yes| commit[Commit] --> more{Tasks remain?}
     more -->|yes| implement
     more -->|no| next([Step 3])
 ```
@@ -100,26 +97,13 @@ Before a task's tests count as done, mutate the code once. Try a wrong constant,
 
 Gate: every mutation you tried made at least one test fail. An uncaught mutation means the behavior is unprotected, or the test is hollow.
 
-Never review your own code. Point each reviewer at task N's block in `plan.md` and the diff, by file path — never paste either into the prompt.
+Gate: any new dependency this task adds is a real, maintained package.
 
-Neither reviewer re-runs the suite themselves. If something looks wrong, it runs one focused test — never the whole suite.
+Never review your own code. Point the reviewer at task N's block in `plan.md` and the diff, by file path — never paste either into the prompt.
 
-The spec-compliance reviewer trusts nothing you report. It reads the diff against the task's own text, and flags anything missing or extra.
+The reviewer never re-runs the suite themselves. If something looks wrong, it runs one focused test — never the whole suite.
 
-The code-quality reviewer runs only after spec compliance passes. It checks:
-
-- the tests exercise real behavior, not a mock
-- errors are handled
-- the diff didn't grow a file beyond the plan's intent
-- access control is enforced at every entry point, not assumed
-- no injection risk in any user-supplied value
-- any new dependency is a real, maintained package
-
-A task's review loop runs up to 5 rounds. Rounds 1 to 3 resume the same implementer — it already has full context.
-
-Rounds 4 and 5 hand the task to a fresh implementer, on a stronger model. It's told plainly how many attempts came before.
-
-Round 5 failing is the plan's own defect, not a 6th attempt — that's one of the hard stops above.
+The reviewer trusts nothing you report. It reads the diff against the task's own text, and flags anything missing or extra.
 
 Gate: no open review findings remain, on any task. Every diff matches only the task it belongs to.
 
