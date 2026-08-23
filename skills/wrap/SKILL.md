@@ -93,7 +93,15 @@ Record positive facts only. A negating word stating a capability — "never fail
 
 Gate: the changelog entry names what changed, in the categories the schema gives. Every item logged during this run appears in the backlog, once each.
 
-## Step 6 — Close
+## Step 6 — Sweep
+
+Read every doc this phase's diff could make stale: `README.md`, anything under `docs/`, and any other doc the product ships to its own users or maintainers.
+
+Fix what no longer matches what shipped. Do this directly — no blind agent, no fix loop.
+
+Gate: every doc read matches what the diff actually shipped.
+
+## Step 7 — Close
 
 Run `${CLAUDE_PLUGIN_ROOT}/scripts/update-state.py`. Commit.
 
@@ -101,17 +109,6 @@ Gate: the state script ran clean. The commit succeeded.
 
 ## Gate
 
-Build only from the steps above.
+Every step above passed. Verify and Dogfood already caught what needed catching — no review runs again here.
 
-Gate on the phase's final diff, `changelog.md`, and `backlog.md`.
-
-Spawn `code-reviewer`, blind — it sees only those, never the audit or the dogfood report. It checks:
-
-- The changelog entry matches what the diff actually did.
-- Every backlog entry names a real, specific gap, not a vague worry.
-- A fresh read of the diff turns up no HIGH finding.
-- No sentence in the changelog or backlog excludes or forbids something. "Never fails" and "nothing to install" state a fact, not an exclusion.
-
-Check `prd.md`'s Roadmap for what comes next. Pass moves to `autobuild:explore` for the next phase — call the Skill tool with that id — or ends the roadmap if this was the last one. Fail returns to Step 2 with the findings.
-
-Fix what it finds, once, then move on — it never runs a second time to confirm. Ask the user only if a finding itself is unclear.
+Check `prd.md`'s Roadmap for what comes next. Move to `autobuild:explore` for the next phase — call the Skill tool with that id — or end the roadmap if this was the last one.
