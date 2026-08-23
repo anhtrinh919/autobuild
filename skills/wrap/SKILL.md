@@ -99,7 +99,7 @@ Build only from the steps above.
 
 Gate on the phase's final diff, `changelog.md`, and `backlog.md`.
 
-Spawn a blind agent — it sees only those, never the audit or the dogfood report. It checks:
+Spawn `code-reviewer`, blind — it sees only those, never the audit or the dogfood report. It checks:
 
 - The changelog entry matches what the diff actually did.
 - Every backlog entry names a real, specific gap, not a vague worry.
