@@ -17,6 +17,8 @@ Writes to `changelog.md` and `backlog.md` at the project root — shared across 
 
 Read `${CLAUDE_PLUGIN_ROOT}/ladder.md` first — it shows where this skill sits in the whole stack.
 
+Read the project's `writing-rule.md` next — scaffold it from `${CLAUDE_PLUGIN_ROOT}/writing-rule.md` if missing. It sets the prose style for every doc this skill writes.
+
 ## Step 1 — Verify
 
 Run the full test suite now, fresh — not a memory of an earlier run.

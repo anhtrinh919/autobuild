@@ -17,6 +17,8 @@ Global runs once, for the whole product, and writes `prd.md`. Per-phase runs aga
 
 Read `${CLAUDE_PLUGIN_ROOT}/ladder.md` first — it shows where this skill sits in the whole stack.
 
+Read the project's `writing-rule.md` next — scaffold it from `${CLAUDE_PLUGIN_ROOT}/writing-rule.md` if missing. It sets the prose style for every doc this skill writes.
+
 ## Step 1 — Ground
 
 Dispatch `crawler`. It finds 3 to 5 real comparable products, not the whole category — actual products people use today.

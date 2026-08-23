@@ -13,6 +13,8 @@ description: Bridges an old claude-build project onto autobuild's schemas, once 
 
 Read `${CLAUDE_PLUGIN_ROOT}/ladder.md` first — it shows where this skill sits in the whole stack.
 
+Read the project's `writing-rule.md` next — scaffold it from `${CLAUDE_PLUGIN_ROOT}/writing-rule.md` if missing. It sets the prose style for every doc this skill writes.
+
 ## Step 1 — Locate
 
 Find the old project's root — it has a `.build-state.json` or a `specs/` directory.

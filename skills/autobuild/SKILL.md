@@ -13,6 +13,8 @@ description: Finds where a build stands — no docs yet, mid-phase, or between p
 
 Read `${CLAUDE_PLUGIN_ROOT}/ladder.md` first — it shows where this skill sits in the whole stack.
 
+Read the project's `writing-rule.md` next — scaffold it from `${CLAUDE_PLUGIN_ROOT}/writing-rule.md` if missing. It sets the prose style for every doc this skill writes.
+
 Wiring only. Every skill it hands off to owns its own steps and gates.
 
 ## Step 1 — Read state

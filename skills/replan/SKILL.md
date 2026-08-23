@@ -13,6 +13,8 @@ description: Archives the current build and its docs, wipes accumulated context,
 
 Read `${CLAUDE_PLUGIN_ROOT}/ladder.md` first — it shows where this skill sits in the whole stack.
 
+Read the project's `writing-rule.md` next — scaffold it from `${CLAUDE_PLUGIN_ROOT}/writing-rule.md` if missing. It sets the prose style for every doc this skill writes.
+
 A roadmap change alone is not a replan. That happens at Wrap's Finish, or at the next phase's Explore — no special handling needed here.
 
 ## Step 1 — Scope

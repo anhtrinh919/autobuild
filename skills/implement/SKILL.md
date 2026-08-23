@@ -20,6 +20,8 @@ Per phase only. Reads `spec/<phase>/contract.md`, `spec/<phase>/features.md`, `s
 
 Read `${CLAUDE_PLUGIN_ROOT}/ladder.md` first — it shows where this skill sits in the whole stack.
 
+Read the project's `writing-rule.md` next — scaffold it from `${CLAUDE_PLUGIN_ROOT}/writing-rule.md` if missing. It sets the prose style for every doc this skill writes.
+
 ## Step 1 — Plan
 
 Enter plan mode.
