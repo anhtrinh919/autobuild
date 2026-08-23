@@ -139,11 +139,11 @@ The user says yes to the shared understanding.
 
 ## Step 5 — Write
 
-Write the rest of `prd.md` from the settled tree, following `schemas/prd.md`. Concept, north star, and target users are already there from Step 3.
+Write the rest of `prd.md` from the settled tree, following `${CLAUDE_PLUGIN_ROOT}/skills/explore/schemas/prd.md`. Concept, north star, and target users are already there from Step 3.
 
 Record positive facts only. A negating word stating a capability — "never fails," "nothing to install" — is not an exclusion.
 
-Per-phase mode appends the stories to `spec/<phase>/user-stories.md`, following `schemas/user-stories.md`. The Scope section is already there from Step 3.
+Per-phase mode appends the stories to `spec/<phase>/user-stories.md`, following `${CLAUDE_PLUGIN_ROOT}/skills/explore/schemas/user-stories.md`. The Scope section is already there from Step 3.
 
 A feature-phase item approved in Step 4 gets appended to `prd.md`'s Roadmap section, as a new phase.
 

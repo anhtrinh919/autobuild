@@ -32,7 +32,7 @@ Map:
 
 Rewrite every line to autobuild's own word and sentence caps, and its positive-facts-only rule. A structural copy is not a migration — old-stack prose was written under different rules.
 
-Gate: `prd.md` exists, matches `schemas/prd.md`'s 9 sections, and every line meets its cap.
+Gate: `prd.md` exists, matches `${CLAUDE_PLUGIN_ROOT}/skills/explore/schemas/prd.md`'s 9 sections, and every line meets its cap.
 
 ## Step 3 — Map the current phase
 

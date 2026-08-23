@@ -33,7 +33,7 @@ Gate: name every real comparable feature found, each with its step count and one
 
 ## Step 2 — Brief
 
-Write `spec/<phase>/design-brief.md`, following `schemas/design-brief.md`.
+Write `spec/<phase>/design-brief.md`, following `${CLAUDE_PLUGIN_ROOT}/skills/spec/schemas/design-brief.md`.
 
 Record positive facts only. A negating word stating a capability — "never fails," "nothing to install" — is not an exclusion.
 
@@ -65,7 +65,7 @@ Gate: the design exists — mockups or images, handed back by the user. It match
 
 ## Step 4 — Contract
 
-Write `spec/<phase>/contract.md`, following `schemas/contract.md`, from the design, the user stories, and `prd.md`.
+Write `spec/<phase>/contract.md`, following `${CLAUDE_PLUGIN_ROOT}/skills/spec/schemas/contract.md`, from the design, the user stories, and `prd.md`.
 
 Record positive facts only. A negating word stating a capability — "never fails," "nothing to install" — is not an exclusion.
 
@@ -106,7 +106,7 @@ Check the contract against the user stories and the design:
 
 Gate: all six hold. Fix any that do not before moving on.
 
-Write `spec/<phase>/features.md`, following `schemas/features.md` — every business rule and endpoint in `contract.md`, translated to plain language. No API, no data model, no code.
+Write `spec/<phase>/features.md`, following `${CLAUDE_PLUGIN_ROOT}/skills/spec/schemas/features.md` — every business rule and endpoint in `contract.md`, translated to plain language. No API, no data model, no code.
 
 Record positive facts only. A negating word stating a capability — "never fails," "nothing to install" — is not an exclusion.
 

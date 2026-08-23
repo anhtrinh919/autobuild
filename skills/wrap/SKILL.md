@@ -79,7 +79,7 @@ Present four options, and only these four:
 
 Discard needs a typed "discard" back before it runs.
 
-Follow `docs/git-workflow.md` for the branch's fate, matching the choice above.
+Follow `${CLAUDE_PLUGIN_ROOT}/docs/git-workflow.md` for the branch's fate, matching the choice above.
 
 Gate: show the four options. Get the user's choice.
 
@@ -89,7 +89,7 @@ Gate: if merged, the base branch's tests pass — run fresh, not assumed.
 
 Skip this step if the work was discarded.
 
-Append one changelog entry for this phase to `changelog.md`, following `schemas/changelog.md`. Append any backlog item logged during Audit or Dogfood to `backlog.md`, following `schemas/backlog.md`.
+Append one changelog entry for this phase to `changelog.md`, following `${CLAUDE_PLUGIN_ROOT}/skills/wrap/schemas/changelog.md`. Append any backlog item logged during Audit or Dogfood to `backlog.md`, following `${CLAUDE_PLUGIN_ROOT}/skills/wrap/schemas/backlog.md`.
 
 Record positive facts only. A negating word stating a capability — "never fails," "nothing to install" — is not an exclusion.
 

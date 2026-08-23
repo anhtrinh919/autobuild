@@ -40,9 +40,9 @@ Gate: every contract line maps to a task, checked one by one.
 
 Exit plan mode. This is the plan's approval gate.
 
-Follow `docs/git-workflow.md` to create this phase's branch, before Step 2 starts.
+Follow `${CLAUDE_PLUGIN_ROOT}/docs/git-workflow.md` to create this phase's branch, before Step 2 starts.
 
-Once approved, write the plan to `spec/<phase>/plan.md`, following `schemas/plan.md` — the plan-mode file does not survive past this session.
+Once approved, write the plan to `spec/<phase>/plan.md`, following `${CLAUDE_PLUGIN_ROOT}/skills/implement/schemas/plan.md` — the plan-mode file does not survive past this session.
 
 Record positive facts only. A negating word stating a capability — "never fails," "nothing to install" — is not an exclusion.
 

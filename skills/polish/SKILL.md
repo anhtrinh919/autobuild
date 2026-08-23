@@ -21,7 +21,7 @@ Never auto-fired. The user invokes this directly, whenever they want the backlog
 
 The user hands over items in whatever form they have them — pasted, an exported file, a `.md`, a URL. Read whatever's given.
 
-Log each item to `backlog.md`, under Bugs, Improvements, or Feature phases, following `schemas/backlog.md`.
+Log each item to `backlog.md`, under Bugs, Improvements, or Feature phases, following `${CLAUDE_PLUGIN_ROOT}/skills/wrap/schemas/backlog.md`.
 
 Record positive facts only. A negating word stating a capability — "never fails," "nothing to install" — is not an exclusion.
 
@@ -57,11 +57,13 @@ Run the mutation check before it counts as done.
 
 Run the full test suite once, fresh, after the whole batch — not per item.
 
-Commit. Close each drained item in `backlog.md` — rewritten to its closed form, not deleted. Append one changelog entry, following `schemas/changelog.md`.
+Commit. Close each drained item in `backlog.md` — rewritten to its closed form, not deleted. Leave a not-done item open. Append one changelog entry, following `${CLAUDE_PLUGIN_ROOT}/skills/wrap/schemas/changelog.md`.
 
 Record positive facts only. A negating word stating a capability — "never fails," "nothing to install" — is not an exclusion.
 
-Gate: zero tests fail. Every item in the batch is closed in `backlog.md`, and named in the changelog.
+Report a table, one row per item in the batch: the original issue, what was done, and the outcome. Flag a not-done item clearly, in its own row, never folded into a done row.
+
+Gate: zero tests fail. Every done item is closed in `backlog.md` and named in the changelog. Every not-done item stays open in `backlog.md` and is flagged in the table.
 
 ## Step 6 — Close
 
