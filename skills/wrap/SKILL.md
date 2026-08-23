@@ -41,6 +41,8 @@ Default tier: mechanical. One scripted hit per new endpoint or screen, determini
 
 A curl per endpoint. A headless render, checked for console errors, per screen. Pass or fail, no agent judgment.
 
+Read only the running output — status code, console, render. Never the source that produced it.
+
 Gate: every new endpoint and screen was hit. Every hit passed.
 
 Full tier — agentic, driven live through `/browse` — applies only when:
@@ -53,6 +55,10 @@ Full tier — agentic, driven live through `/browse` — applies only when:
 Spawn a dogfood subagent for the full tier. It drives the running app through `/browse`, blind to the repo, and reports what it walked, what broke, and what it never reached.
 
 Derive either tier's checks from this phase's own stories, not from the shipped code.
+
+A story whose flow calls the product's own agent needs no repeat live calls. Seed mock data for each visual state, and dogfood against that.
+
+Call the real agent once, to confirm the call itself works — not to confirm every state.
 
 Fix every break on a user story's path now. A rough edge outside this phase's stories needs the user's OK before it goes to `backlog.md`, instead.
 
