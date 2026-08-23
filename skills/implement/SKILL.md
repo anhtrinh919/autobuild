@@ -46,16 +46,6 @@ Record positive facts only. A negating word stating a capability — "never fail
 
 Gate: `spec/<phase>/plan.md` exists, and matches the approved plan.
 
-Spawn a blind agent — it sees only `spec/<phase>/plan.md`, `spec/<phase>/contract.md`, and `spec/<phase>/features.md`, never this session's planning conversation. It checks completeness, spec alignment, task decomposition, and buildability:
-
-- Every contract line maps to a task.
-- Every function in `features.md` is honored by some task — what the user approved is what gets built.
-- Every task matches the contract — nothing invented, nothing missing.
-- Each task is small, ordered, and can finish and commit on its own.
-- Every task's test, run, and commit fields are concrete, not descriptive.
-
-Gate: the blind reviewer finds nothing to flag, or every finding is fixed and it runs again.
-
 ## Step 2 — Build
 
 For each task, in order:
