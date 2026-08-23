@@ -1,6 +1,6 @@
 ---
 name: polish
-description: Drains the backlog — collects new items from any source, groups them into one small shippable batch, and ships it. Trigger on /autobuild:polish, or whenever the user hands over a batch of bugs or items, wants to clear the backlog, or asks to knock out some small fixes.
+description: Drains the backlog — collects new items from any source, groups them into one shippable batch, and ships it. Trigger on /autobuild:polish, or whenever the user hands over a batch of bugs or items, wants to clear the backlog, or asks to knock out some small fixes.
 ---
 
 # Polish
@@ -35,11 +35,19 @@ Gate: every item chosen for this batch has a clear, checkable fix in mind.
 
 ## Step 3 — Batch
 
-Pick a small group of open backlog items — same-shape, non-conflicting, each finishable and shippable together in one pass. Not a full phase.
+Pick a group of open backlog items — same-shape, non-conflicting, each finishable and shippable together in one pass. Not a full phase.
 
 Gate: every item in the batch touches different files, or the same file in a way that doesn't conflict.
 
-## Step 4 — Drain
+## Step 4 — Plan
+
+For each item in the batch, name the exact file it touches and the exact fix — not "add error handling" or "similar to Item N."
+
+Check for interaction: does one item's fix change behavior another item's fix depends on. Order the batch to avoid it.
+
+Gate: every item names a real file and a concrete fix, checked one by one.
+
+## Step 5 — Drain
 
 Work on a `polish-<date>` branch.
 
@@ -55,7 +63,7 @@ Record positive facts only. A negating word stating a capability — "never fail
 
 Gate: zero tests fail. Every item in the batch is closed in `backlog.md`, and named in the changelog.
 
-## Step 5 — Close
+## Step 6 — Close
 
 Run `${CLAUDE_PLUGIN_ROOT}/scripts/update-state.py`. Merge the `polish-<date>` branch. Commit.
 
@@ -71,6 +79,6 @@ Gate on the diff, `changelog.md`, and `backlog.md`. Spawn a blind agent — it s
 - Every closed backlog item is actually addressed by the diff.
 - No sentence in the changelog or backlog excludes or forbids something. "Never fails" and "nothing to install" state a fact, not an exclusion.
 
-Pass ends this run — polish has no next skill to call. Fail returns to Step 4 with the findings.
+Pass ends this run — polish has no next skill to call. Fail returns to Step 5 with the findings.
 
 Fix what it finds, once, then move on — it never runs a second time to confirm. Ask the user only if a finding itself is unclear.
