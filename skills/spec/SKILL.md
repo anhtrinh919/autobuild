@@ -77,6 +77,8 @@ Name endpoints as nouns, plural for a collection, hierarchical for a child. The 
 
 Give every rule that can fail an error shape: a code, a message, and the field it points to.
 
+Sweep every field, action, and external dependency through its Edge cases categories, per `${CLAUDE_PLUGIN_ROOT}/skills/spec/schemas/contract.md`. Write one line per category that applies.
+
 A mechanism earns a sequence diagram when at least two hold:
 
 - More than one actor takes part.
@@ -90,8 +92,9 @@ Check every rule below before moving on:
 - Every endpoint states who can call it, what it sends, what it returns, and a status code per outcome.
 - Every rule states a condition, a result, and an error shape if it can fail.
 - Every diagrammed mechanism earns it by the test above.
+- Every field, action, and dependency has an Edge cases line for each category that applies to it.
 
-Gate: all four hold.
+Gate: all five hold.
 
 ## Step 5 — Reconcile
 
@@ -130,6 +133,7 @@ Gate on `spec/<phase>/contract.md` and `spec/<phase>/features.md`. Spawn a blind
 - Every endpoint has a matching screen, or is marked internal.
 - Every business rule is checkable, not descriptive.
 - Every business rule and endpoint has a matching, plain-language function in `features.md`.
+- Every field, action, and dependency has an Edge cases line for each category that applies to it.
 - No sentence in the contract or `features.md` excludes or forbids something. "Never fails" and "nothing to install" state a fact, not an exclusion.
 
 Pass moves straight to `autobuild:implement` — call the Skill tool with that id. Fail returns to Step 4 with the findings.

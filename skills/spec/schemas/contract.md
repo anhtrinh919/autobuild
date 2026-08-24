@@ -39,4 +39,10 @@ One per line: the condition, and the result.
 
 ## Edge cases
 
-One per line, tied to the rule or endpoint it belongs to: empty, error, boundary, and conflicting-write cases.
+One per line, tied to the rule, endpoint, or field it belongs to. Sweep every one through its own fixed categories:
+
+- Every field: empty, one, its maximum, one past its maximum, and wrong type or a duplicate.
+- Every action: the normal call, a repeated call, and two calls at once.
+- Every external dependency: normal, slow, and failed.
+
+A field, action, or dependency with no line for a category that applies to it is not finished.
