@@ -51,7 +51,9 @@ Gate: every item names a real file and a concrete fix, checked one by one.
 
 Work on a `polish-<date>` branch.
 
-For each item, follow Implement's own test-first method. Name the break, write one failing test, then the smallest fix.
+For each item, follow Implement's own test-first method. Name the break, and confirm it's a bug, not a design decision.
+
+Grade a design decision by door and reach first. Then write one failing test, and the smallest fix.
 
 Run the mutation check before it counts as done.
 
