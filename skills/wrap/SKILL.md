@@ -91,6 +91,8 @@ Skip this step if the work was discarded.
 
 Append one changelog entry for this phase to `changelog.md`, following `${CLAUDE_PLUGIN_ROOT}/skills/wrap/schemas/changelog.md`. Append any backlog item logged during Audit or Dogfood to `backlog.md`, following `${CLAUDE_PLUGIN_ROOT}/skills/wrap/schemas/backlog.md`.
 
+`backlog.md` may not exist yet. Scaffold it from `${CLAUDE_PLUGIN_ROOT}/skills/wrap/schemas/backlog.md` before the first item lands.
+
 Record positive facts only. A negating word stating a capability — "never fails," "nothing to install" — is not an exclusion.
 
 Gate: the changelog entry names what changed, in the categories the schema gives. Every item logged during this run appears in the backlog, once each.

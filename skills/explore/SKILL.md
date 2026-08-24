@@ -52,6 +52,8 @@ Decide plumbing decisions yourself — ones the user would never notice either w
 
 An item raised but not settled this round may still have real value. Ask about it in this round; log it to `backlog.md` only if the user says yes.
 
+`backlog.md` may not exist yet. Scaffold it from `${CLAUDE_PLUGIN_ROOT}/skills/wrap/schemas/backlog.md` before the first item lands.
+
 Nothing with no future value gets written down at all.
 
 Number each question. Give your recommended answer. Use this format:
