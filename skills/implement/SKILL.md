@@ -11,7 +11,7 @@ Per phase only. Reads `spec/<phase>/contract.md`, `spec/<phase>/features.md`, `s
 - Gate: the check at the end of a step.
 - Pass a gate → move to the next step.
 - Fail a gate → redo the step, using the gate's findings.
-- A test that would encode a design decision, not a bug, is graded first — door and reach, see Step 2 — before it's written.
+- Grade a design decision behind a task's test first — door and reach, see Step 2.
 - Fail the same gate twice with no decision ever graded → grade it now, the same way, as a backstop. Act on the grade.
 - Stop and ask the user only for:
   - an irreversible or destructive action
@@ -79,14 +79,20 @@ Before writing a task's test, name the break: the exact production change that w
 
 A design decision, not a bug, is graded before the test is written, on two tests:
 
-- Door: if this choice is wrong, what does it cost to undo? Cheap and local → two-way door. Other work would come to depend on it → one-way door.
-- Reach: does a user's real experience, or a business rule, change because of this choice? No → no reach. Yes → reach.
+- Door: if this choice is wrong, what does it cost to undo?
+  - Cheap and fast to undo → two-way door.
+  - Other work would come to depend on it → one-way door.
+- Reach: does this choice change what a user can see, do, or is charged or permitted?
+  - No → no reach.
+  - Yes → reach.
 
 No reach, two-way door: choose it. Name the choice in this task's commit message, and keep going.
 
-No reach, one-way door: choose it, but say so and why in this same turn, not only in the commit message. Keep going.
+No reach, one-way door: choose it, but say so and why in this turn, not only in the commit message. Keep going.
 
-Reach, either door: stop and ask, per the list above. A two-way door gets a plain ask — state the choice and the reason. A one-way door gets a grounded ask — name what else was considered, and why this — before either gets a yes.
+Reach, either door: stop and ask, per the list above.
+
+A two-way door gets a plain ask — state the choice and the reason. A one-way door gets a grounded ask — name what else was considered, and why this — before either gets a yes.
 
 Follow one method for every task:
 
@@ -151,4 +157,4 @@ Spawn a blind agent — it sees only the contract and the diff, never the plan o
 
 Pass moves straight to `autobuild:wrap` — call the Skill tool with that id. Fail returns to Step 2 with the findings.
 
-Fail this gate twice, with no decision ever graded under Step 2 → grade it now, the same way, as a backstop. Act on the grade before moving on.
+Fail this gate twice, with no decision ever graded under Step 2 → grade it now, as a backstop. Act on the grade before moving on.

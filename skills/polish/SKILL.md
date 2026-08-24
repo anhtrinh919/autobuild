@@ -53,7 +53,9 @@ Work on a `polish-<date>` branch.
 
 For each item, follow Implement's own test-first method. Name the break, and confirm it's a bug, not a design decision.
 
-Grade a design decision by door and reach first. Then write one failing test, and the smallest fix.
+Grade a design decision by door and reach first, the same way. A reach decision stops here — ask the user, per Implement's own rule, before any fix.
+
+No reach: write one failing test, and the smallest fix.
 
 Run the mutation check before it counts as done.
 
