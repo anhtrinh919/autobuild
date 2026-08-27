@@ -55,6 +55,8 @@ Gate: every screen block is a real surface. Two blocks naming one screen are one
 
 Gate: nothing visual appears in the brief.
 
+Gate: every string under `Copy` names the thing that shows it and the state it shows in.
+
 Gate: every sentence the brief states about what already runs was checked against the running application.
 
 Gate: show the brief to the user. Get their approval.

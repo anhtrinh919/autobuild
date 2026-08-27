@@ -47,4 +47,20 @@ One block per screen — a real surface a user is on, not a state of one. A phas
   - Criteria this screen answers: <one line per acceptance criterion, in the user's words>
   - States: <one line per state that needs a design decision — loading, empty, error, mid-flight, and the normal case>
   - Primary action: <what a user does here>
-  - Copy: <every real string this screen shows, one per line, not a placeholder>
+  - Copy: <one line per string, as `<what shows it>, <when> — <the string>`>
+
+Every string names the thing that shows it and the state it shows in. A list of strings on its own makes the designer work out where each one lands, once per string, every time they read the brief.
+
+Write the real string, never a placeholder. Mark a string an earlier phase settled and this phase leaves alone, so the designer knows it is not theirs to place.
+
+A `Copy` block reads like this:
+
+```
+  - Copy:
+    - Live line, while a turn runs — Lune is working.
+    - Live line, settled — Lune worked for 6 minutes 41 seconds.
+    - Turn, stopped by the owner — You stopped this turn.
+    - Code block control, at rest — Copy
+    - Code block control, just pressed — Copied
+    - Composer, empty — Ask about your business (unchanged, Phase 2)
+```
