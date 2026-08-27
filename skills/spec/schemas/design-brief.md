@@ -4,7 +4,7 @@
 
 Write for a designer who has read nothing else. They have not sat through the interview, they do not know the product's words, and they are not reading the code. A sentence that only makes sense to someone who was here is a sentence to rewrite.
 
-This brief is a snapshot, dated on the day it is written. It stands as what was true then. The contract carries the phase forward, and the contract wins wherever the two disagree.
+Date it. Everything else about how this file is read afterwards belongs to the skills that read it, never to the page a designer opens.
 
 No style guide, layout, or design system. That call belongs to the designer, not this brief.
 
