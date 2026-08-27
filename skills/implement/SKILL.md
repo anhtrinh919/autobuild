@@ -75,6 +75,10 @@ flowchart TD
 
 Commit before dispatching review — the reviewer needs this batch's diff alone, never the next batch's too.
 
+A task that writes a general part — a parser, a renderer, a differ, a scheduler, a retry, a date reader — searches first for what already does it. Step 1's prior-art answer covers the phase; this covers the part inside it.
+
+Take what fits, and say in the commit what it replaced. Write it yourself when the search comes back with nothing that fits, and say that in the commit too.
+
 Before writing a task's test, name the break: the exact production change that would make it fail. Confirm that change is a bug, not a design decision you're free to make differently.
 
 A design decision, not a bug, is graded before the test is written, on two tests:

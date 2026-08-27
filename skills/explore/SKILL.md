@@ -33,7 +33,15 @@ If a settled fact in `prd.md` no longer holds — the last phase shipped differe
 
 Per-phase mode also reads `backlog.md` at the project root, if one exists. It carries items a previous phase's wrap logged.
 
+Dispatch a second `crawler` for prior art: has this phase's problem already been solved by someone, as a package, a service, a platform feature or a protocol?
+
+It names each candidate with its weekly downloads, last release, size, licence and what it leaves the phase to do. A candidate that fits carries a cost — read it now, while the shape is open.
+
+The two searches answer different questions. The first asks what people use. The second asks what this phase can integrate rather than write.
+
 Gate: name at least 3 real comparable products, each with its gap.
+
+Gate: name what already solves this phase's problem, or say the search came back with nothing that fits. Either answer is written down.
 
 Gate: per-phase mode only — `prd.md` matches current reality, or was corrected.
 
