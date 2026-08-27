@@ -41,7 +41,9 @@ The two searches answer different questions. The first asks what people use. The
 
 Gate: name at least 3 real comparable products, each with its gap.
 
-Gate: name what already solves this phase's problem, or say the search came back with nothing that fits. Either answer is written down.
+Write both searches to `spec/<phase>/research.md`, following `${CLAUDE_PLUGIN_ROOT}/skills/spec/schemas/research.md`. `spec` appends its own findings to the same file.
+
+Gate: name what already solves this phase's problem, or say the search came back with nothing that fits. Either answer is in `research.md`.
 
 Gate: per-phase mode only — `prd.md` matches current reality, or was corrected.
 

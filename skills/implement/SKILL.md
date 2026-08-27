@@ -5,7 +5,9 @@ description: Turns a phase's contract into working, tested code through a task p
 
 # Implement
 
-Per phase only. Reads `spec/<phase>/contract.md`, `spec/<phase>/features.md`, `spec/<phase>/design-brief.md`, `spec/<phase>/user-stories.md`, and `prd.md` — never another phase's `spec/`.
+Per phase only. Reads `spec/<phase>/contract.md`, `spec/<phase>/features.md`, `spec/<phase>/design-brief.md`, `spec/<phase>/user-stories.md`, `spec/<phase>/research.md`, and `prd.md` — never another phase's `spec/`.
+
+`design-brief.md` is a snapshot of the day it was written. The contract carries the phase forward, and the contract wins wherever the two disagree.
 
 - Step: one unit of work.
 - Gate: the check at the end of a step.

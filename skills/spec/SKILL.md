@@ -29,7 +29,11 @@ For each app, count the user's steps, and note every decision point and point of
 
 Wait for `crawler` before writing anything. Ground the brief in what both found — never reconcile the brief against it after.
 
+Write what both found to `spec/<phase>/research.md`, following `${CLAUDE_PLUGIN_ROOT}/skills/spec/schemas/research.md`. Append to what `explore` left there rather than writing over it. A finding that stays in this session cannot be checked by the brief, by the contract, or by anyone reading either one later.
+
 Gate: name every real comparable feature found, each with its step count and one friction point.
+
+Gate: `spec/<phase>/research.md` exists, and every finding in it carries a source.
 
 ## Step 2 — Brief
 
@@ -43,7 +47,15 @@ Include the real on-screen copy, not a placeholder.
 
 Exclude palette, typography, mood, component choice, layout, and motion. Those are the designer's own call, not this brief's.
 
-Gate: every user story maps to at least one screen in the brief. Nothing visual appears in the brief.
+Every sentence about what already runs is checked against the running application before it is written. An earlier document describes what was true when it was written, and a phase since then may have moved it.
+
+Gate: every acceptance criterion in `user-stories.md` appears under some screen in the brief. A story maps by its criteria, one by one, never by its title alone.
+
+Gate: every screen block is a real surface. Two blocks naming one screen are one screen, and its states belong inside it.
+
+Gate: nothing visual appears in the brief.
+
+Gate: every sentence the brief states about what already runs was checked against the running application.
 
 Gate: show the brief to the user. Get their approval.
 
