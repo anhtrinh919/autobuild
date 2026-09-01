@@ -1,0 +1,38 @@
+{
+  "name": "autobuild",
+  "version": "0.1.31",
+  "description": "Build software from an idea through researched phases, contracts, test-first implementation, review, and release.",
+  "author": {
+    "name": "Anh Trinh",
+    "url": "https://github.com/anhtrinh919"
+  },
+  "homepage": "https://github.com/anhtrinh919/autobuild",
+  "repository": "https://github.com/anhtrinh919/autobuild.git",
+  "license": "MIT",
+  "keywords": [
+    "sdd",
+    "codex",
+    "claude-code",
+    "spec-driven",
+    "test-first",
+    "workflow"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Autobuild",
+    "shortDescription": "Build software from an idea through shipped phases.",
+    "longDescription": "Research, specify, implement, review, and finish software through resumable phases.",
+    "developerName": "Anh Trinh",
+    "category": "Productivity",
+    "capabilities": [
+      "Interactive",
+      "Write"
+    ],
+    "websiteURL": "https://github.com/anhtrinh919/autobuild",
+    "defaultPrompt": [
+      "Start a new product build.",
+      "Resume this project's open build phase.",
+      "Drain this project's backlog."
+    ]
+  }
+}
