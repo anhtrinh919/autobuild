@@ -1,6 +1,6 @@
 {
   "name": "autobuild",
-  "version": "0.1.31",
+  "version": "0.1.32",
   "description": "Build software from an idea through researched phases, contracts, test-first implementation, review, and release.",
   "author": {
     "name": "Anh Trinh",

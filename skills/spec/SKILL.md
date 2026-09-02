@@ -1,6 +1,6 @@
 ---
 name: spec
-description: Writes a phase's design brief and contract from its user stories and the product PRD. Waits for real design before writing the contract. Trigger on /autobuild:spec, right after explore's per-phase gate passes, or whenever the user asks for a design brief, a data model, an API contract, or endpoints for the next phase.
+description: Writes a phase's design brief and contract. Trigger on phase stories, design briefs, data models, API contracts, or endpoint planning.
 ---
 
 # Spec
@@ -13,23 +13,31 @@ Per phase only. Reads `spec/<phase>/user-stories.md` and `prd.md` — never anot
 - Fail a gate → redo the step, using the gate's findings.
 - Fail the same gate twice → stop, ask the user.
 
-Read `${CLAUDE_PLUGIN_ROOT}/ladder.md` first — it shows where this skill sits in the whole stack.
+Resolve every `../../` path from this `SKILL.md`. In Claude Code, that root is `${CLAUDE_PLUGIN_ROOT}`.
 
-Read the project's `writing-rule.md` next — scaffold it from `${CLAUDE_PLUGIN_ROOT}/writing-rule.md` if missing. It sets the prose style for every doc this skill writes.
+Read `../../ladder.md` first — it shows where this skill sits in the whole stack.
+
+Read the project's `writing-rule.md` next — scaffold it from `../../writing-rule.md` if missing. It sets the prose style for every doc this skill writes.
+
+A draft, statusless, or uncommitted approved `features.md` resumes at the first incomplete step.
 
 ## Step 1 — Ground
 
-Dispatch `crawler`. It finds real apps that solve this specific feature, not the whole product.
+Spawn one fresh standard research agent with no conversation history. It finds real products that solve this feature.
+
+Its prompt includes the phase scope, user stories, target users, known constraints, and exact research question.
 
 It reads their app-store reviews and competitor help docs for each one.
 
-When a free trial exists, walk its flow yourself with `/browse` — crawler can't.
+Use public product flows when available through existing tools. Add no browser dependency for this step.
 
 For each app, count the user's steps, and note every decision point and point of friction.
 
-Wait for `crawler` before writing anything. Ground the brief in what both found — never reconcile the brief against it after.
+If subagents are unavailable, research in this thread. Wait for the findings before writing anything.
 
-Write what both found to `spec/<phase>/research.md`, following `${CLAUDE_PLUGIN_ROOT}/skills/spec/schemas/research.md`. Append to what `explore` left there rather than writing over it. A finding that stays in this session cannot be checked by the brief, by the contract, or by anyone reading either one later.
+Ground the brief in those findings. Never reconcile the brief against research after writing it.
+
+Write the findings to `spec/<phase>/research.md`, following `../../skills/spec/schemas/research.md`. Append to what `explore` left there rather than writing over it. A finding that stays in this session cannot be checked by the brief, by the contract, or by anyone reading either one later.
 
 Gate: name every real comparable feature found, each with its step count and one friction point.
 
@@ -37,7 +45,7 @@ Gate: `spec/<phase>/research.md` exists, and every finding in it carries a sourc
 
 ## Step 2 — Brief
 
-Write `spec/<phase>/design-brief.md`, following `${CLAUDE_PLUGIN_ROOT}/skills/spec/schemas/design-brief.md`.
+Write `spec/<phase>/design-brief.md`, following `../../skills/spec/schemas/design-brief.md`.
 
 Record positive facts only. A negating word stating a capability — "never fails," "nothing to install" — is not an exclusion.
 
@@ -79,7 +87,7 @@ Gate: the design exists — mockups or images, handed back by the user. It match
 
 ## Step 4 — Contract
 
-Write `spec/<phase>/contract.md`, following `${CLAUDE_PLUGIN_ROOT}/skills/spec/schemas/contract.md`, from the design, the user stories, and `prd.md`.
+Write `spec/<phase>/contract.md`, following `../../skills/spec/schemas/contract.md`, from the design, the user stories, and `prd.md`.
 
 Record positive facts only. A negating word stating a capability — "never fails," "nothing to install" — is not an exclusion.
 
@@ -91,7 +99,7 @@ Name endpoints as nouns, plural for a collection, hierarchical for a child. The 
 
 Give every rule that can fail an error shape: a code, a message, and the field it points to.
 
-Sweep every field, action, and external dependency through its Edge cases categories, per `${CLAUDE_PLUGIN_ROOT}/skills/spec/schemas/contract.md`. Write one line per category that applies.
+Sweep every field, action, and external dependency through its Edge cases categories, per `../../skills/spec/schemas/contract.md`. Write one line per category that applies.
 
 A mechanism earns a sequence diagram when at least two hold:
 
@@ -123,7 +131,9 @@ Check the contract against the user stories and the design:
 
 Gate: all six hold. Fix any that do not before moving on.
 
-Write `spec/<phase>/features.md`, following `${CLAUDE_PLUGIN_ROOT}/skills/spec/schemas/features.md` — every business rule and endpoint in `contract.md`, translated to plain language. No API, no data model, no code.
+Write `spec/<phase>/features.md`, following `../../skills/spec/schemas/features.md` — every business rule and endpoint in `contract.md`, translated to plain language. No API, no data model, no code.
+
+Set its status to `draft`.
 
 Record positive facts only. A negating word stating a capability — "never fails," "nothing to install" — is not an exclusion.
 
@@ -131,17 +141,13 @@ Gate: every business rule and endpoint in `contract.md` traces to exactly one fu
 
 Gate: show `features.md` to the user. Get their approval.
 
-## Step 6 — Close
+## Step 6 — Review and close
 
-Run `${CLAUDE_PLUGIN_ROOT}/scripts/update-state.py`. Commit.
+Spawn a fresh deliberate, read-only subagent with no conversation history.
 
-Gate: the state script ran clean. The commit succeeded.
+Use flagship when the contract includes security, migration, concurrency, core data, public APIs, or three-system work.
 
-## Gate
-
-Build only from the steps above.
-
-Gate on `spec/<phase>/contract.md` and `spec/<phase>/features.md`. Spawn a blind agent — it sees only the contract, `features.md`, and the user stories, never the interview or the design. It checks:
+Show it only the contract, features, and user stories. It checks:
 
 - Every user story is covered by the contract.
 - Every endpoint has a matching screen, or is marked internal.
@@ -150,6 +156,14 @@ Gate on `spec/<phase>/contract.md` and `spec/<phase>/features.md`. Spawn a blind
 - Every field, action, and dependency has an Edge cases line for each category that applies to it.
 - No sentence in the contract or `features.md` excludes or forbids something. "Never fails" and "nothing to install" state a fact, not an exclusion.
 
-Pass moves straight to `autobuild:implement` — call the Skill tool with that id. Fail returns to Step 4 with the findings.
+Fix each finding once. Fail returns to Step 4 when a finding remains.
 
-Fix what it finds, once, then move on — it never runs a second time to confirm. Ask the user only if a finding itself is unclear.
+On pass, set the features status to `approved`. Commit the phase documents.
+
+Gate: zero review findings remain. Features are `approved`. The working tree is clean.
+
+## Gate
+
+Build only from the steps above.
+
+Pass loads and follows `autobuild:implement` now. Fail returns to Step 4 with the findings.

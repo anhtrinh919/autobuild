@@ -4,6 +4,8 @@
 
 This phase's stories only. The product's full story set lives in `prd.md`.
 
+Status: `draft` during Explore. Set `approved` only after its final review.
+
 ## Scope
 
 One paragraph. What this phase delivers, and for whom.

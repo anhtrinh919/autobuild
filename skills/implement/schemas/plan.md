@@ -4,6 +4,12 @@
 
 This phase's plan only. A decision here does not apply to any other phase.
 
+## Status
+
+`building` while any build or review work remains. `verified` only after the final review passes.
+
+Base branch: `<exact branch name>`
+
 ## Approach
 
 One paragraph. The shape of the solution, and why the files break down this way.
@@ -20,6 +26,7 @@ One block per task, numbered, small enough to finish and commit on its own:
 
 - `<N>. <task name>`
   - Files: <exact paths this task touches>
+  - Tier: `standard`, `deliberate`, `flagship`, or `exceptional`
   - Test: the failing test's real code, in full
   - Run: `<the exact command>` — expected: `<the exact failure message>`
   - Then: the minimal code that makes it pass, in full

@@ -4,6 +4,8 @@
 
 This phase's functions only. A decision here does not apply to any other phase.
 
+Status: `draft` during Spec. Set `approved` only after its final review.
+
 ## Functions
 
 One block per function:

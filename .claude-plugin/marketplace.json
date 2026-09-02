@@ -1,7 +1,7 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "autobuild",
-  "description": "AI-assisted software building — idea to shipped, seven skills, no fixed pipeline.",
+  "description": "AI-assisted software building — idea to shipped, eight skills, no fixed pipeline.",
   "owner": {
     "name": "Anh Trinh",
     "url": "https://github.com/anhtrinh919"

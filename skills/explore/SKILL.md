@@ -1,6 +1,6 @@
 ---
 name: explore
-description: Turns an idea into a grounded PRD through web research and a round-by-round interview. Runs once for the whole product, and again per phase for that phase's user stories. Trigger on /autobuild:explore, or whenever the user pitches a product idea, asks for a PRD, user stories, or a roadmap, or starts a new phase — even without naming the skill.
+description: Researches and interviews users to create a PRD or phase stories. Trigger on product ideas, roadmaps, PRDs, stories, or new phases.
 ---
 
 # Explore
@@ -15,15 +15,33 @@ Global runs once, for the whole product, and writes `prd.md`. Per-phase runs aga
 - Fail a gate → redo the step, using the gate's findings.
 - Fail the same gate twice → stop, ask the user.
 
-Read `${CLAUDE_PLUGIN_ROOT}/ladder.md` first — it shows where this skill sits in the whole stack.
+Resolve every `../../` path from this `SKILL.md`. In Claude Code, that root is `${CLAUDE_PLUGIN_ROOT}`.
 
-Read the project's `writing-rule.md` next — scaffold it from `${CLAUDE_PLUGIN_ROOT}/writing-rule.md` if missing. It sets the prose style for every doc this skill writes.
+Read `../../ladder.md` first — it shows where this skill sits in the whole stack.
+
+Read the project's `writing-rule.md` next — scaffold it from `../../writing-rule.md` if missing. It sets the prose style for every doc this skill writes.
+
+A draft or uncommitted approved PRD resumes global mode at its first incomplete step.
+
+Draft or uncommitted approved phase stories resume per-phase mode at their first incomplete step.
 
 ## Step 1 — Ground
 
-Dispatch `crawler`. It finds 3 to 5 real comparable products, not the whole category — actual products people use today.
+Spawn two fresh standard research agents with no conversation history. Give each agent one search.
 
-For each, it notes what it does well, what it does badly, and the gap it leaves. Wait for it before Step 2 starts.
+Each prompt names the product or phase, target users, known constraints, and exact research question.
+
+The first search finds 3 to 5 real comparable products that people use today.
+
+For each product, record strengths, weaknesses, and the gap it leaves.
+
+The second search finds prior art: packages, services, platform features, or protocols that solve the same problem.
+
+Global mode searches the product's core problem. Per-phase mode searches this phase's problem.
+
+For each candidate, record weekly downloads, last release, size, licence, and remaining work.
+
+If subagents are unavailable, run both searches separately in this thread. Wait for both results before Step 2.
 
 Name the gap this idea could fill, from what it found. That gap grounds the interview, not a general impression of the market.
 
@@ -33,17 +51,19 @@ If a settled fact in `prd.md` no longer holds — the last phase shipped differe
 
 Per-phase mode also reads `backlog.md` at the project root, if one exists. It carries items a previous phase's wrap logged.
 
-Dispatch a second `crawler` for prior art: has this phase's problem already been solved by someone, as a package, a service, a platform feature or a protocol?
-
-It names each candidate with its weekly downloads, last release, size, licence and what it leaves the phase to do. A candidate that fits carries a cost — read it now, while the shape is open.
-
-The two searches answer different questions. The first asks what people use. The second asks what this phase can integrate rather than write.
+The two searches answer different questions. The first asks what people use. The second asks what this product or phase can integrate.
 
 Gate: name at least 3 real comparable products, each with its gap.
 
-Write both searches to `spec/<phase>/research.md`, following `${CLAUDE_PLUGIN_ROOT}/skills/spec/schemas/research.md`. `spec` appends its own findings to the same file.
+Global mode carries the findings into the interview. Settled findings become PRD decisions.
 
-Gate: name what already solves this phase's problem, or say the search came back with nothing that fits. Either answer is in `research.md`.
+Per-phase mode writes both searches to `spec/<phase>/research.md`.
+
+Follow `../../skills/spec/schemas/research.md`. `spec` appends its findings to the per-phase file.
+
+Gate: name what already solves the searched problem, or say nothing fits.
+
+Gate: per-phase mode only — the answer is in `spec/<phase>/research.md`.
 
 Gate: per-phase mode only — `prd.md` matches current reality, or was corrected.
 
@@ -62,7 +82,7 @@ Decide plumbing decisions yourself — ones the user would never notice either w
 
 An item raised but not settled this round may still have real value. Ask about it in this round; log it to `backlog.md` only if the user says yes.
 
-`backlog.md` may not exist yet. Scaffold it from `${CLAUDE_PLUGIN_ROOT}/skills/wrap/schemas/backlog.md` before the first item lands.
+`backlog.md` may not exist yet. Scaffold it from `../../skills/wrap/schemas/backlog.md` before the first item lands.
 
 Nothing with no future value gets written down at all.
 
@@ -75,7 +95,7 @@ Number each question. Give your recommended answer. Use this format:
 ```mermaid
 flowchart LR
     compute[Compute the frontier] --> fact{Needs a fact\nfrom outside?}
-    fact -->|yes| dispatch[Dispatch `crawler`\nnon-blocking]
+    fact -->|yes| dispatch[Search the web\nnon-blocking]
     fact -->|no| ask[Ask the frontier]
     dispatch -->|rest of frontier| ask
     ask --> wait[Wait for the user's answers]
@@ -86,9 +106,9 @@ flowchart LR
     confirm --> next([Step 3])
 ```
 
-Dispatch `crawler` for any fact you'd otherwise ask the user. Never ask for one you could look up.
+Search for any fact you would otherwise ask the user. Never ask for a fact you can verify.
 
-Keep dispatching it as new branches appear.
+Keep searching as new branches appear.
 
 Gate: recompute the frontier — it returns zero items. Every shape item above is settled.
 
@@ -118,7 +138,9 @@ Gate: show it to the user. Get their approval.
 
 Write it to disk now, before Step 4.
 
-Global mode writes concept, north star, and target users into `prd.md`. Per-phase mode writes the paragraph as the Scope section of `spec/<phase>/user-stories.md`.
+Global mode writes concept, north star, and target users into `prd.md`. Set its status to `draft`.
+
+Per-phase mode writes Scope to `spec/<phase>/user-stories.md`. Set its status to `draft`.
 
 A crash after this point does not lose the shape.
 
@@ -139,9 +161,9 @@ Per-phase mode folds in one question per backlog item:
 - propose it as a new roadmap phase
 - leave it for later
 
-Dispatch `crawler` for any fact you'd otherwise ask the user. Never ask for one you could look up.
+Search for any fact you would otherwise ask the user. Never ask for a fact you can verify.
 
-Keep dispatching it as new branches appear.
+Keep searching as new branches appear.
 
 Gate: recompute the frontier — it returns zero items. Every section above has one settled decision behind it.
 
@@ -151,33 +173,29 @@ The user says yes to the shared understanding.
 
 ## Step 5 — Write
 
-Write the rest of `prd.md` from the settled tree, following `${CLAUDE_PLUGIN_ROOT}/skills/explore/schemas/prd.md`. Concept, north star, and target users are already there from Step 3.
+Write the rest of `prd.md` from the settled tree, following `../../skills/explore/schemas/prd.md`. Concept, north star, and target users are already there from Step 3.
 
 Record positive facts only. A negating word stating a capability — "never fails," "nothing to install" — is not an exclusion.
 
-Per-phase mode appends the stories to `spec/<phase>/user-stories.md`, following `${CLAUDE_PLUGIN_ROOT}/skills/explore/schemas/user-stories.md`. The Scope section is already there from Step 3.
+Per-phase mode appends the stories to `spec/<phase>/user-stories.md`, following `../../skills/explore/schemas/user-stories.md`. The Scope section is already there from Step 3.
 
 A feature-phase item approved in Step 4 gets appended to `prd.md`'s Roadmap section, as a new phase.
 
-Gate: count the sections — all nine are present. Check the tree line by line against the draft — every settled decision appears once.
+Every roadmap line names its exact `spec/<phase-id>` path. Phase IDs use lowercase kebab-case.
+
+Gate: global mode only — all nine PRD sections exist. Each phase has one exact ID and directory.
+
+Gate: per-phase mode only — Scope and Stories are present. Every settled story appears once.
 
 Gate: show the doc to the user. Get their approval.
 
-## Step 6 — Close
+## Step 6 — Review and close
 
-Run `${CLAUDE_PLUGIN_ROOT}/scripts/update-state.py`. Set up the remote. Commit.
+Create a review-only checklist from the approved decisions. Spawn a fresh deliberate, read-only subagent with no conversation history.
 
-Per-phase mode also closes any folded-in backlog item — rewritten down to its closed form, not deleted — and commits that too.
+Use flagship when the document changes security, migration, concurrency, core data, public APIs, or three-system work.
 
-Gate: the state script ran clean. The commit succeeded.
-
-Gate: per-phase mode only — every folded-in item is closed in `backlog.md`, none left open.
-
-## Gate
-
-Build only from the steps above.
-
-Gate on this run's doc — `prd.md` for global, `spec/<phase>/user-stories.md` for per-phase. Spawn a blind agent — it sees only that doc, never the interview. It checks:
+Show it the approved decision checklist and the finished document. It checks:
 
 - Every branch of the design tree appears in the doc.
 - Every user story names an actor and an outcome, not a general capability.
@@ -186,6 +204,20 @@ Gate on this run's doc — `prd.md` for global, `spec/<phase>/user-stories.md` f
 - Per-phase mode only: an approved feature-phase item appears once in `prd.md`'s Roadmap.
 - No sentence in the doc excludes or forbids something. "Never fails" and "nothing to install" state a fact, not an exclusion.
 
-Pass moves straight to `autobuild:spec` — call the Skill tool with that id. Fail returns to Step 3 with the findings.
+Fix each finding once. Fail returns to Step 3 when a finding remains.
 
-Fix what it finds, once, then move on — it never runs a second time to confirm. Ask the user only if a finding itself is unclear.
+On pass, set the document status to `approved`.
+
+Per-phase mode closes every folded-in backlog item. Rewrite each item instead of deleting it.
+
+Commit the approved documents. Configure a remote only after the user approves its exact URL.
+
+Gate: the status is `approved`. The working tree is clean. The remote matches the user's choice.
+
+## Gate
+
+Build only from the steps above.
+
+Global pass loads and follows `autobuild:autobuild` now.
+
+Per-phase pass loads and follows `autobuild:spec` now. Fail returns to Step 3 with the findings.

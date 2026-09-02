@@ -1,8 +1,10 @@
 # changelog.md schema
 
-10 words a line. One line per entry. Newest phase first.
+10 words a line. One line per entry. Newest entry first.
 
-## <phase name>
+## <entry-id>
+
+Use the exact phase ID for phase work. Use the exact polish branch name for polish work.
 
 - Added: <what>
 - Changed: <what>

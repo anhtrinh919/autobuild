@@ -1,6 +1,6 @@
 ---
 name: implement
-description: Turns a phase's contract into working, tested code through a task plan and a strict test-first build loop. Waits for spec-compliance review before each task closes. Trigger on /autobuild:implement, right after spec's gate passes, or whenever the user asks to build, code, or ship a phase.
+description: Turns a phase contract into tested code through an approved plan. Trigger when users ask to build, code, implement, or ship a phase.
 ---
 
 # Implement
@@ -22,13 +22,21 @@ Per phase only. Reads `spec/<phase>/contract.md`, `spec/<phase>/features.md`, `s
   - a plan too broken to guess a path through
   - any decision Step 2's grading marks as reach
 
-Read `${CLAUDE_PLUGIN_ROOT}/ladder.md` first — it shows where this skill sits in the whole stack.
+Resolve every `../../` path from this `SKILL.md`. In Claude Code, that root is `${CLAUDE_PLUGIN_ROOT}`.
 
-Read the project's `writing-rule.md` next — scaffold it from `${CLAUDE_PLUGIN_ROOT}/writing-rule.md` if missing. It sets the prose style for every doc this skill writes.
+Read `../../ladder.md` first — it shows where this skill sits in the whole stack.
+
+Read the project's `writing-rule.md` next — scaffold it from `../../writing-rule.md` if missing. It sets the prose style for every doc this skill writes.
+
+If committed `plan.md` has no status, set it to `building`.
+
+An uncommitted `verified` status resumes Step 4 and finishes its commit.
+
+A building plan resumes at Step 2 only when it names the base branch and the phase branch is active.
+
+If either branch fact is missing, return to Step 1 and ask the user to confirm the base.
 
 ## Step 1 — Plan
-
-Enter plan mode.
 
 Map the files first: which files get created, which get modified, and the one job each file does.
 
@@ -42,11 +50,19 @@ Gate: grep the plan for "TBD", "TODO", "similar to", or "add appropriate" — ze
 
 Gate: every contract line maps to a task, checked one by one.
 
-Exit plan mode. This is the plan's approval gate.
+Assign each task a tier. Use standard unless its scope meets a higher tier's rule in `../../ladder.md`.
 
-Follow `${CLAUDE_PLUGIN_ROOT}/docs/git-workflow.md` to create this phase's branch, before Step 2 starts.
+Show the complete plan to the user. Get approval before writing it or creating the branch.
 
-Once approved, write the plan to `spec/<phase>/plan.md`, following `${CLAUDE_PLUGIN_ROOT}/skills/implement/schemas/plan.md` — the plan-mode file does not survive past this session.
+Gate: the user approved the complete plan.
+
+Record the current branch as the plan's base branch.
+
+Follow `../../docs/git-workflow.md` to create this phase's branch before Step 2.
+
+Once approved, write `spec/<phase>/plan.md`, following `../../skills/implement/schemas/plan.md`.
+
+Set its status to `building`.
 
 Record positive facts only. A negating word stating a capability — "never fails," "nothing to install" — is not an exclusion.
 
@@ -54,80 +70,73 @@ Gate: `spec/<phase>/plan.md` exists, and matches the approved plan.
 
 ## Step 2 — Build
 
-For each task, in order:
-
 Resuming after a break? Check `plan.md`'s tasks against the branch's git log — a task whose commit message is already there is done.
 
-Start from the first task that isn't.
+Start from the first task that is not done. A plan without Tier uses standard.
 
-Batch two or more small, same-shape tasks into one dispatch — one implement-review cycle, not one per task. A task with a real design decision or cross-file risk still gets its own cycle.
+Use the task's recorded tier before dispatching. Update it before dispatch when new facts require escalation.
 
-```mermaid
-flowchart TD
-    start([Start batch]) --> outstanding{A prior batch's\nreview still open?}
-    outstanding -->|yes| resolve[Resolve it — fix,\nre-review, commit]
-    outstanding -->|no| implement
-    resolve --> implement[Implement this batch inline —\nred, green, refactor]
-    implement --> commit[Commit this batch]
-    commit --> dispatch[Dispatch this batch's\nreview, non-blocking]
-    dispatch --> more{Batches remain?}
-    more -->|yes| start
-    more -->|no| drain[Resolve this batch's\nreview — fix, commit] --> next([Step 3])
-```
+Use deliberate for unclear prior art or a first failed repair.
 
-Commit before dispatching review — the reviewer needs this batch's diff alone, never the next batch's too.
+Use flagship for security, migration, concurrency, core data, public APIs, or three-system changes.
 
-A task that writes a general part — a parser, a renderer, a differ, a scheduler, a retry, a date reader — searches first for what already does it. Step 1's prior-art answer covers the phase; this covers the part inside it.
+Use exceptional only after a direct flagship pass leaves a stated risk open. Record that escalation in the task block.
 
-Take what fits, and say in the commit what it replaced. Write it yourself when the search comes back with nothing that fits, and say that in the commit too.
+Before dispatching, grade every design decision by door and reach. A two-way door is cheap to undo.
 
-Before writing a task's test, name the break: the exact production change that would make it fail. Confirm that change is a bug, not a design decision you're free to make differently.
+A one-way door has dependent work. Reach changes what users see, do, pay for, or are permitted to do.
 
-A design decision, not a bug, is graded before the test is written, on two tests:
+A reach decision stops and asks the user. Name no-reach choices and explain one-way choices in this turn.
 
-- Door: if this choice is wrong, what does it cost to undo?
-  - Cheap and fast to undo → two-way door.
-  - Other work would come to depend on it → one-way door.
-- Reach: does this choice change what a user can see, do, or is charged or permitted?
-  - No → no reach.
-  - Yes → reach.
+For each uncommitted task, spawn a fresh writer subagent with no conversation history. Give it the task block, applicable contract facts, and exact allowed paths.
 
-No reach, two-way door: choose it. Name the choice in this task's commit message, and keep going.
+Tell it to change only its task's Files. It must not commit, switch branches, or change any other path.
 
-No reach, one-way door: choose it, but say so and why in this turn, not only in the commit message. Keep going.
+Tell it to stop before editing when it finds an ungraded decision. The parent grades it and asks for reach.
 
-Reach, either door: stop and ask, per the list above.
+Tell it to search prior art for general parts. It reports what it used or why nothing fit.
 
-A two-way door gets a plain ask — state the choice and the reason. A one-way door gets a grounded ask — name what else was considered, and why this — before either gets a yes.
+Tell it to name the break, write one failing test, run its exact Run command, and make the smallest passing change.
 
-Follow one method for every task:
+Tell it to refactor only while green. Add no new behavior.
 
-- Write one failing test. Watch it fail for the stated reason.
-- A test waiting on async state polls the real condition — never a fixed sleep.
-- Write the smallest code that passes. Watch this task's own tests pass, clean.
-- Refactor only while green. Add no new behavior.
+Tell it to poll real async conditions, compute expected values independently, and test its own boundary.
 
-Step 2 never reruns the full suite — that cost belongs to Step 3, once, at the end.
+Tell it to mutate the code once. It tries a wrong constant, branch, return, or skipped edge case.
 
-A test proves nothing if its expected value comes from the same code under test. Compute it by hand instead.
+The writer reports changed paths, mutation result, focused test output, exit codes, and new dependencies.
 
-Test your own boundary, not a library's or a framework's — its own tests already cover that.
+Reject work outside the task's Files. Check every reported result before accepting the task.
 
-A test that only breaks when someone changes an intentional constant is a change detector, not a test. Test the behavior the constant drives instead.
+Run writers in parallel only when their Files do not overlap. Keep risky tasks in separate review cycles.
 
-Before a task's tests count as done, mutate the code once. Try a wrong constant, a wrong branch, an empty or default return, a skipped edge case.
+If writer subagents are unavailable, perform the same bounded task in this session. The parent session keeps every branch and commit action.
 
-Gate: every mutation you tried made at least one test fail. An uncaught mutation means the behavior is unprotected, or the test is hollow.
+Batch two or more small, same-shape accepted tasks into one review cycle. Keep risky tasks in separate cycles.
 
-Gate: any new dependency this task adds is a real, maintained package.
+Step 2 never reruns the full suite. That cost belongs to Step 3, once, at the end.
 
-Never review your own code. Point the reviewer at task N's block in `plan.md` and the diff, by file path — never paste either into the prompt.
+A task's test is hollow when expected values come from the code under test. Compute them independently.
+
+A test that only detects an intentional constant change is hollow. Test the behavior that constant drives.
+
+Gate: every mutation made at least one test fail. An uncaught mutation leaves the behavior unprotected or the test hollow.
+
+Gate: any new dependency is a real, maintained package.
+
+Spawn a fresh, read-only review subagent before committing each batch. Use deliberate for standard or deliberate batches.
+
+Use flagship for a flagship batch. Use exceptional for an exceptional batch.
+
+Point it at every batch task block and the uncommitted diff by file path.
 
 The reviewer never re-runs the suite themselves. If something looks wrong, it runs one focused test — never the whole suite.
 
 The reviewer trusts nothing you report. It reads the diff against the task's own text, and flags anything missing or extra.
 
 Gate: no open review findings remain, on any task. Every diff matches only the task it belongs to.
+
+The parent session directs repairs, reruns focused tests, and commits the reviewed batch. Only that commit marks its tasks done.
 
 ## Step 3 — Verify
 
@@ -143,24 +152,32 @@ Check the contract line by line against the code:
 
 Gate: zero tests fail. Every contract line is accounted for in the code.
 
-## Step 4 — Close
+## Step 4 — Review and close
 
-Run `${CLAUDE_PLUGIN_ROOT}/scripts/update-state.py`. Commit `state.json`.
+Review the phase's full diff against `spec/<phase>/contract.md`.
 
-Gate: the state script ran clean. The commit succeeded.
+Spawn a fresh, read-only subagent with no conversation history. Show it the contract, plan, and phase diff.
 
-## Gate
+Use exceptional when any task uses exceptional. Otherwise use flagship when any task uses flagship.
 
-Build only from the steps above.
+Otherwise, use deliberate.
 
-Gate on the phase's full diff against `spec/<phase>/contract.md`.
-
-Spawn a blind agent — it sees only the contract and the diff, never the plan or the interview. It checks:
+It checks:
 
 - Every business rule in the contract has a test that passes.
 - Every endpoint in the contract works end to end.
 - Nothing in the diff is missing from the plan, or added beyond it.
 
-Pass moves straight to `autobuild:wrap` — call the Skill tool with that id. Fail returns to Step 2 with the findings.
+Fix each finding once. Fail returns to Step 2 when a finding remains.
 
-Fail this gate twice, with no decision ever graded under Step 2 → grade it now, as a backstop. Act on the grade before moving on.
+On pass, set the plan status to `verified`. Commit that status change.
+
+Gate: zero review findings remain. The plan status is `verified`. The working tree is clean.
+
+## Gate
+
+Build only from the steps above.
+
+Pass loads and follows `autobuild:wrap` now.
+
+Fail Step 4 twice with no graded decision. Grade it under Step 2 before moving on.

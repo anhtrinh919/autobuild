@@ -1,6 +1,6 @@
 ---
 name: replan
-description: Archives the current build and its docs, wipes accumulated context, and hands back a clean slate to pivot from. Trigger on /autobuild:replan, or whenever the user wants to change direction, pivot the idea, start over, or says this isn't working.
+description: Archives a build and opens a clean path for a pivot. Trigger when users change direction, renew, pivot, or start over.
 ---
 
 # Replan
@@ -11,9 +11,11 @@ description: Archives the current build and its docs, wipes accumulated context,
 - Fail a gate → redo the step, using the gate's findings.
 - Fail the same gate twice → stop, ask the user.
 
-Read `${CLAUDE_PLUGIN_ROOT}/ladder.md` first — it shows where this skill sits in the whole stack.
+Resolve every `../../` path from this `SKILL.md`. In Claude Code, that root is `${CLAUDE_PLUGIN_ROOT}`.
 
-Read the project's `writing-rule.md` next — scaffold it from `${CLAUDE_PLUGIN_ROOT}/writing-rule.md` if missing. It sets the prose style for every doc this skill writes.
+Read `../../ladder.md` first — it shows where this skill sits in the whole stack.
+
+Read the project's `writing-rule.md` next — scaffold it from `../../writing-rule.md` if missing. It sets the prose style for every doc this skill writes.
 
 A roadmap change alone is not a replan. That happens at Wrap's Finish, or at the next phase's Explore — no special handling needed here.
 
@@ -28,13 +30,17 @@ Gate: the user picked one of the two, by name.
 
 ## Step 2 — Archive
 
+Resolve the exact live and archive paths. Show both to the user. Require the user to type `archive` before changing either path.
+
+Gate: the user typed `archive`. The resolved archive target does not exist.
+
 Tag the current commit: `git tag archived-<date>`.
 
 Move the whole project directory to a sibling path, `<project>-archived-<date>`, at the same parent level. Never a subfolder inside the live project.
 
 Create a fresh, empty directory at the original path. Run `git init` there — new history, nothing carried over.
 
-`CLAUDE.md`, `prd.md`, every `spec/<phase>/`, `backlog.md`, `changelog.md`, and `state.json` all move with the archive.
+`AGENTS.md`, `CLAUDE.md`, `prd.md`, every `spec/<phase>/`, `backlog.md`, and `changelog.md` all move with the archive.
 
 None of it exists at the fresh path. Old architecture, old decisions, and accumulated context can't poison a direction that isn't there to read.
 
@@ -42,9 +48,9 @@ Gate: the fresh path is empty except `.git`. The archived path has everything th
 
 ## Step 3 — The slate
 
-Total renew: call `autobuild:explore` (global), fresh. Carry forward only the original idea, as a note — not a settled decision to build from.
+Total renew carries only the original idea as a note, not a settled decision.
 
-Pivot: call `autobuild:explore` (global), fresh. Carry forward whichever pieces the user marks as validated, as raw material for a new interview — reopened, not reused as-is.
+Pivot carries only pieces the user marks as validated, as raw material for a new interview.
 
 Gate: the fresh path still has no `prd.md`. Nothing pre-loaded the interview.
 
@@ -58,9 +64,9 @@ Gate: the entry names what changed and why, in `changelog.md`'s own format.
 
 ## Step 5 — Close
 
-Run `${CLAUDE_PLUGIN_ROOT}/scripts/update-state.py`. Commit.
+Commit the fresh changelog.
 
-Gate: the state script ran clean. The commit succeeded.
+Gate: the commit succeeded.
 
 ## Gate
 
@@ -68,6 +74,6 @@ Build only from the steps above.
 
 Gate on the outcome: the archived path has everything the live project had, tagged and dated. The fresh path is empty except `.git` and one `changelog.md` entry.
 
-Pass moves to `autobuild:explore` — call the Skill tool with that id, global mode. Fail returns to Step 1 with the findings.
+Pass loads and follows `autobuild:explore` in global mode. Fail returns to Step 1 with the findings.
 
 Fix what it finds, once, then move on — it never runs a second time to confirm. Ask the user only if a finding itself is unclear.

@@ -6,6 +6,8 @@
 # <one-line outcome>
 ```
 
+Status: `draft` during Explore or `migrating` during Migrate. Set `approved` after final review.
+
 ## Concept
 
 One paragraph. What this is, who it is for, why it matters now.
@@ -55,9 +57,11 @@ One per line, each tagged.
 
 ## Roadmap
 
-One phase per line, in build order.
+One phase per line, in build order. Each line owns one exact phase ID and directory.
 
-- Phase <N> — <name>: <what it delivers> — <why it is next>
+- [phase-<N>-<slug>] <name>: <what it delivers> — <why it is next>
+
+The phase directory is `spec/<phase-id>`. Use lowercase kebab-case. Never derive it later.
 
 Phase 1 is a thin shell — navigable structure, no real feature work yet. Guard this: the moment "shell" grows a real feature, it's no longer Phase 1's job.
 

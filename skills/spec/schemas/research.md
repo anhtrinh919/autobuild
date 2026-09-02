@@ -1,6 +1,10 @@
+20 words a sentence. 2 sentences a line.
+
 # research.md schema
 
-What the ground search found, written down so the brief and the contract can be checked against it. A finding that stays in one session is a finding nobody can check.
+This phase's research only. A finding here does not apply to any other phase.
+
+What the ground search found. It lets later documents check their claims.
 
 Dated. Each entry carries the source that backs it, and says whether it comes from a vendor's own document or from someone's testimony.
 
@@ -8,7 +12,7 @@ Dated. Each entry carries the source that backs it, and says whether it comes fr
 
 One block per product:
 
-- `<product>` — <what it does for this same feature>
+- `<product>` — <what it does for this phase's feature>
   - Steps: <how many actions the user takes, and what they are>
   - Friction: <the point a user hits, with its source>
   - Source: <url>
@@ -17,9 +21,9 @@ Write the gap plainly when a product has no public trail on this feature. Silenc
 
 ## Prior art
 
-What already solves this phase's problem, as a package, a service, a platform feature or a protocol.
+What already solves this phase's problem, as a package, service, platform feature, or protocol.
 
-- `<name>` — <what it does, and what it leaves this phase to do>
+- `<name>` — <what it does, and what remains for this phase>
   - Cost: <size, licence, what it pulls in, what it assumes>
   - Health: <weekly downloads, last release, whether it is maintained>
   - Source: <url>
@@ -32,4 +36,4 @@ The friction above, named as a thing this phase does better. One line each.
 
 ## What is settled everywhere
 
-What every comparable does the same way. This phase does it that way too, and spends its thinking elsewhere.
+What every comparable does the same way. This phase follows that pattern.

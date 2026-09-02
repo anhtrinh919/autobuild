@@ -1,24 +1,38 @@
 #!/usr/bin/env bash
-# Auto-bumps .claude-plugin/plugin.json's patch version on every commit that
-# touches more than just plugin.json itself (a manual version edit is left alone).
+# Auto-bumps both plugin manifests when a commit touches another file.
 set -euo pipefail
 
-PLUGIN_JSON=".claude-plugin/plugin.json"
+PLUGIN_JSONS=(".claude-plugin/plugin.json" ".codex-plugin/plugin.json")
 
-if [ ! -f "$PLUGIN_JSON" ]; then
-  exit 0
+other_staged=$(git diff --cached --name-only | grep -vE '^\.((claude|codex)-plugin)/plugin\.json$' || true)
+claude_version=$(python3 -c 'import json; print(json.load(open(".claude-plugin/plugin.json"))["version"])')
+codex_version=$(python3 -c 'import json; print(json.load(open(".codex-plugin/plugin.json"))["version"])')
+codex_base="${codex_version%%+*}"
+
+if [ "$claude_version" != "$codex_base" ]; then
+  echo "Plugin base versions differ: ${claude_version} != ${codex_base}" >&2
+  exit 1
 fi
 
-other_staged=$(git diff --cached --name-only | grep -v "^${PLUGIN_JSON}$" || true)
 if [ -z "$other_staged" ]; then
+  if [ "$claude_version" != "$codex_version" ]; then
+    echo "Plugin versions differ: ${claude_version} != ${codex_version}" >&2
+    exit 1
+  fi
   exit 0
 fi
 
-current=$(python3 -c "import json; print(json.load(open('$PLUGIN_JSON'))['version'])")
+if [ "$claude_version" != "$codex_version" ] && [[ "$codex_version" != "${claude_version}+codex."* ]]; then
+  echo "Unexpected Codex version suffix: ${codex_version}" >&2
+  exit 1
+fi
+
+current="${claude_version%%+*}"
 IFS='.' read -r major minor patch <<< "$current"
 new_version="${major}.${minor}.$((patch + 1))"
 
-python3 - "$PLUGIN_JSON" "$new_version" <<'PY'
+for plugin_json in "${PLUGIN_JSONS[@]}"; do
+python3 - "$plugin_json" "$new_version" <<'PY'
 import json, sys
 path, new_version = sys.argv[1], sys.argv[2]
 data = json.load(open(path))
@@ -27,6 +41,6 @@ with open(path, "w") as f:
     json.dump(data, f, indent=2)
     f.write("\n")
 PY
-
-git add "$PLUGIN_JSON"
+git add "$plugin_json"
+done
 echo "Bumped plugin version: ${current} -> ${new_version}"

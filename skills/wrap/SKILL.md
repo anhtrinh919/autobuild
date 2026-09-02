@@ -1,11 +1,11 @@
 ---
 name: wrap
-description: Verifies, audits, dogfoods, and finishes a phase's code, then logs what shipped and what didn't. Trigger on /autobuild:wrap, right after implement's gate passes, or whenever the user asks to review, test, merge, or ship a phase.
+description: Verifies, audits, checks, and finishes a phase. Trigger when users ask to review, test, merge, finish, or ship a phase.
 ---
 
 # Wrap
 
-Per phase, for verify, audit, dogfood, and finish. Reads the phase's diff, `spec/<phase>/contract.md`, `spec/<phase>/user-stories.md`, and `prd.md` — never another phase's `spec/`.
+Per phase, for verification, audit, runtime checks, and finish. Reads the phase diff, contract, stories, and `prd.md`.
 
 Writes to `changelog.md` and `backlog.md` at the project root — shared across every phase.
 
@@ -15,9 +15,21 @@ Writes to `changelog.md` and `backlog.md` at the project root — shared across 
 - Fail a gate → redo the step, using the gate's findings.
 - Fail the same gate twice → stop, ask the user.
 
-Read `${CLAUDE_PLUGIN_ROOT}/ladder.md` first — it shows where this skill sits in the whole stack.
+Resolve every `../../` path from this `SKILL.md`. In Claude Code, that root is `${CLAUDE_PLUGIN_ROOT}`.
 
-Read the project's `writing-rule.md` next — scaffold it from `${CLAUDE_PLUGIN_ROOT}/writing-rule.md` if missing. It sets the prose style for every doc this skill writes.
+Read `../../ladder.md` first — it shows where this skill sits in the whole stack.
+
+Read the project's `writing-rule.md` next — scaffold it from `../../writing-rule.md` if missing. It sets the prose style for every doc this skill writes.
+
+When a plan lacks its base, inspect committed `state.json` for a `legacy-snapshot` routing object.
+
+Use its base only when its phase matches this phase, `present` lists `plan.md`, and the working plan exists.
+
+Compare the exact phase heading in current `HEAD` and the resolved base branch.
+
+If current `HEAD` has it and the base lacks it, resume at Step 7. Skip Steps 1 through 6.
+
+If the working tree has an uncommitted heading, resume at the first incomplete step from Step 4.
 
 ## Step 1 — Verify
 
@@ -27,7 +39,9 @@ Gate: zero tests fail.
 
 ## Step 2 — Audit
 
-Spawn a code-review subagent over the phase's full diff. Never review your own code.
+Spawn a fresh deliberate, read-only review subagent with no conversation history. Point it at the phase's full diff.
+
+Use flagship for security, migration, concurrency, core data, public APIs, or three-system changes.
 
 Fix every HIGH finding now. A MEDIUM or LOW finding, or one outside this phase's stories, needs the user's OK before it goes to `backlog.md`, instead of blocking here.
 
@@ -35,40 +49,61 @@ A felt MEDIUM or LOW finding is never auto-backlogged — one the user would not
 
 Gate: zero HIGH findings remain unresolved.
 
-## Step 3 — Dogfood
+## Step 3 — Check the running surface
 
-Skip this step if the phase shipped no running surface to click through.
+Skip this step if the phase shipped no running surface.
 
-Default tier: mechanical. One scripted hit per new endpoint or screen, deterministic and automated.
+Derive deterministic checks from this phase's stories. Use one scripted hit per new endpoint or screen.
 
-A curl per endpoint. A headless render, checked for console errors, per screen. Pass or fail, no agent judgment.
+Use curl for endpoints. Use an existing project-native render or route check for screens.
 
-Read only the running output — status code, console, render. Never the source that produced it.
+Inspect an existing screenshot when the project already produces one. Add no browser dependency for this step.
 
-Gate: every new endpoint and screen was hit. Every hit passed.
+If a screen has no existing check, mark its stories unverified. Add no test tool for this step.
 
-Full tier — agentic, driven live through `/browse` — applies only when:
+Show every unverified story to the user. Continue only when the user accepts that coverage gap.
 
-- a flow spans multiple steps an outside check can't observe
-- correctness is genuinely visual or interaction-only: drag-and-drop, layout, animation
-- `prd.md`'s Roadmap shows this is the final phase
-- the user asks for it directly
+Read only running output: status codes, logs, rendered output, or existing screenshots.
 
-Spawn a dogfood subagent for the full tier. It drives the running app through `/browse`, blind to the repo, and reports what it walked, what broke, and what it never reached.
-
-Derive either tier's checks from this phase's own stories, not from the shipped code.
-
-A story whose flow calls the product's own agent needs no repeat live calls. Seed mock data for each visual state, and dogfood against that.
+A story that calls the product's agent needs one live call. Seed mock data for its other states.
 
 Call the real agent once, to confirm the call itself works — not to confirm every state.
 
-Fix every break on a user story's path now. A rough edge outside this phase's stories needs the user's OK before it goes to `backlog.md`, instead.
+Fix every break on a user story's path now. Ask before logging an unrelated rough edge to `backlog.md`.
 
-Same felt-impact fork as Audit — a felt rough edge is never silently backlogged. Surface it; the user picks fix-now or backlog.
+A felt rough edge is never silently backlogged. The user picks fix-now or backlog.
 
-Gate: every user story for this phase was walked or hit. Nothing on its path is broken.
+Gate: every checkable story passed. The user accepted each unverified story.
 
-## Step 4 — Finish
+## Step 4 — Docs
+
+Prepend one phase entry to `changelog.md`, following `../../skills/wrap/schemas/changelog.md`.
+
+Use the exact phase ID as its heading: `## <phase-id>`.
+
+Append approved Audit or runtime items to `backlog.md`, following `../../skills/wrap/schemas/backlog.md`.
+
+`backlog.md` may not exist yet. Scaffold it from `../../skills/wrap/schemas/backlog.md` before the first item lands.
+
+Record positive facts only. A negating word stating a capability — "never fails," "nothing to install" — is not an exclusion.
+
+Gate: the exact phase heading exists. Every approved item appears once.
+
+## Step 5 — Sweep
+
+Read every doc this phase's diff could make stale: `README.md`, anything under `docs/`, and other shipped docs.
+
+Fix what no longer matches what shipped. Do this directly, with no review loop.
+
+Gate: every doc read matches what the diff shipped.
+
+## Step 6 — Close
+
+Commit the changelog, backlog, and documentation updates on the phase branch.
+
+Gate: the closure commit exists. The working tree is clean.
+
+## Step 7 — Finish
 
 Present four options, and only these four:
 
@@ -79,40 +114,16 @@ Present four options, and only these four:
 
 Discard needs a typed "discard" back before it runs.
 
-Follow `${CLAUDE_PLUGIN_ROOT}/docs/git-workflow.md` for the branch's fate, matching the choice above.
+Follow `../../docs/git-workflow.md` for the branch's fate, matching the choice above.
 
-Gate: show the four options. Get the user's choice.
+Gate: the selected action completed. A pull-request choice returned its URL.
 
 Gate: if merged, the base branch's tests pass — run fresh, not assumed.
 
-## Step 5 — Docs
-
-Skip this step if the work was discarded.
-
-Append one changelog entry for this phase to `changelog.md`, following `${CLAUDE_PLUGIN_ROOT}/skills/wrap/schemas/changelog.md`. Append any backlog item logged during Audit or Dogfood to `backlog.md`, following `${CLAUDE_PLUGIN_ROOT}/skills/wrap/schemas/backlog.md`.
-
-`backlog.md` may not exist yet. Scaffold it from `${CLAUDE_PLUGIN_ROOT}/skills/wrap/schemas/backlog.md` before the first item lands.
-
-Record positive facts only. A negating word stating a capability — "never fails," "nothing to install" — is not an exclusion.
-
-Gate: the changelog entry names what changed, in the categories the schema gives. Every item logged during this run appears in the backlog, once each.
-
-## Step 6 — Sweep
-
-Read every doc this phase's diff could make stale: `README.md`, anything under `docs/`, and any other doc the product ships to its own users or maintainers.
-
-Fix what no longer matches what shipped. Do this directly — no blind agent, no fix loop.
-
-Gate: every doc read matches what the diff actually shipped.
-
-## Step 7 — Close
-
-Run `${CLAUDE_PLUGIN_ROOT}/scripts/update-state.py`. Commit.
-
-Gate: the state script ran clean. The commit succeeded.
-
 ## Gate
 
-Every step above passed. Verify and Dogfood already caught what needed catching — no review runs again here.
+Every step above passed. Verify and runtime checks already caught what needed catching.
 
-Check `prd.md`'s Roadmap for what comes next. Move to `autobuild:explore` for the next phase — call the Skill tool with that id — or end the roadmap if this was the last one.
+After a merge, check the Roadmap. Load and follow `autobuild:explore` for the next phase, or end it.
+
+After a pull request, keep, or discard action, stop.
