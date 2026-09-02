@@ -5,27 +5,16 @@ from pathlib import Path
 
 root = Path(__file__).resolve().parent.parent
 claude = json.loads((root / ".claude-plugin/plugin.json").read_text())
-codex = json.loads((root / ".codex-plugin/plugin.json").read_text())
-assert claude["version"] == codex["version"].split("+", 1)[0], "plugin base versions differ"
-assert "commands" not in claude, "legacy command creates a duplicate Codex skill"
+assert "commands" not in claude, "legacy command creates a duplicate skill"
+assert not (root / ".codex-plugin").exists(), "Codex manifest belongs in the Codex source repo"
 
 skills = sorted((root / "skills").glob("*/SKILL.md"))
 assert len(skills) == 8, f"expected 8 skills, found {len(skills)}"
 
-blocked = (
-    "/browse",
-    "Skill tool",
-    "update-state.py",
-    "Dispatch `crawler`",
-    "Enter plan mode",
-    "Exit plan mode",
-)
-
 for skill in skills:
     text = skill.read_text()
     assert f"name: {skill.parent.name}" in text, f"wrong name in {skill}"
-    for phrase in blocked:
-        assert phrase not in text, f"{phrase!r} remains in {skill}"
+    assert "update-state.py" not in text, f"obsolete state script referenced in {skill}"
     if skill.parent.name not in {"autobuild", "migrate", "wrap"}:
         assert "`state.json`" not in text, f"obsolete state routing remains in {skill}"
     for relative in re.findall(r"`(\.\./\.\./[^`]+)`", text):
@@ -64,7 +53,10 @@ assert "Write the action last" in polish, "polish action marker is not crash-saf
 ladder = (root / "ladder.md").read_text()
 assert "## Subagent tiers" in ladder, "dispatch tiers are undocumented"
 assert "parent session keeps its user-selected model" in ladder, "tiers can override the parent model"
-assert "Claude Sonnet 5 / medium" in ladder, "Claude tier mapping is missing"
+for tier in ("mechanical", "standard", "deliberate", "flagship", "exceptional"):
+    assert tier in ladder, f"tier mapping lacks {tier}"
+assert "Sonnet 5" in ladder and "Opus 5" in ladder, "Claude tier mapping is missing"
+assert "Codex" not in ladder, "Codex tier mapping belongs in the Codex source repo"
 
 plan = (root / "skills/implement/schemas/plan.md").read_text()
 assert "Tier: `standard`, `deliberate`, `flagship`, or `exceptional`" in plan, "tasks lack a durable tier"
@@ -79,4 +71,4 @@ assert research[4].startswith("This phase's research only."), "research schema l
 
 assert not (root / "scripts/update-state.py").exists(), "obsolete state script remains"
 assert not (root / "commands/autobuild.md").exists(), "legacy command remains"
-print("Codex port checks passed")
+print("Claude skill checks passed")

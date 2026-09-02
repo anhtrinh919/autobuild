@@ -6,15 +6,17 @@
 
 Select a tier only when spawning a subagent. The parent session keeps its user-selected model.
 
-- mechanical — Source collection and read-only checks. Codex Luna / medium; Claude Sonnet 5.
-- standard — Bounded research and approved code tasks. Codex Terra / medium; Claude Sonnet 5.
-- deliberate — Unclear prior art, first repairs, and ordinary reviews. Codex Terra / high; Claude Sonnet 5.
-- flagship — Security, migration, concurrency, core data, public APIs, or three-system changes. Codex Sol / high; Claude Opus 5.
-- exceptional — A stated risk remains after a direct flagship pass. Codex Sol / xhigh; Claude repeats Opus 5.
+Each tier names the model to spawn the subagent on. A tier sets the model, and nothing else.
 
-Claude has no reasoning-effort setting. A tier picks its Claude model only; the effort suffix applies to Codex alone.
+- mechanical — Source collection and read-only checks. Sonnet 5.
+- standard — Bounded research and approved code tasks. Sonnet 5.
+- deliberate — Unclear prior art, first repairs, and ordinary reviews. Sonnet 5.
+- flagship — Security, migration, concurrency, core data, public APIs, or three-system changes. Opus 5.
+- exceptional — A stated risk remains after a direct flagship pass. Opus 5.
 
-A reviewer uses its writer's tier or higher. Select models only when you spawn the subagent.
+Three tiers share Sonnet 5, and two share Opus 5. Each tier still records the work it covers.
+
+A reviewer uses its writer's tier or higher. Select the model only when you spawn the subagent.
 
 ```mermaid
 flowchart TD

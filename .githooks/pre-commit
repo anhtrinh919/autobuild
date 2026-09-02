@@ -1,38 +1,17 @@
 #!/usr/bin/env bash
-# Auto-bumps both plugin manifests when a commit touches another file.
+# Auto-bumps the Claude plugin manifest when a commit touches another file.
 set -euo pipefail
 
-PLUGIN_JSONS=(".claude-plugin/plugin.json" ".codex-plugin/plugin.json")
+PLUGIN_JSON=".claude-plugin/plugin.json"
 
-other_staged=$(git diff --cached --name-only | grep -vE '^\.((claude|codex)-plugin)/plugin\.json$' || true)
-claude_version=$(python3 -c 'import json; print(json.load(open(".claude-plugin/plugin.json"))["version"])')
-codex_version=$(python3 -c 'import json; print(json.load(open(".codex-plugin/plugin.json"))["version"])')
-codex_base="${codex_version%%+*}"
+other_staged=$(git diff --cached --name-only | grep -vE '^\.claude-plugin/plugin\.json$' || true)
+[ -z "$other_staged" ] && exit 0
 
-if [ "$claude_version" != "$codex_base" ]; then
-  echo "Plugin base versions differ: ${claude_version} != ${codex_base}" >&2
-  exit 1
-fi
-
-if [ -z "$other_staged" ]; then
-  if [ "$claude_version" != "$codex_version" ]; then
-    echo "Plugin versions differ: ${claude_version} != ${codex_version}" >&2
-    exit 1
-  fi
-  exit 0
-fi
-
-if [ "$claude_version" != "$codex_version" ] && [[ "$codex_version" != "${claude_version}+codex."* ]]; then
-  echo "Unexpected Codex version suffix: ${codex_version}" >&2
-  exit 1
-fi
-
-current="${claude_version%%+*}"
-IFS='.' read -r major minor patch <<< "$current"
+version=$(python3 -c 'import json; print(json.load(open(".claude-plugin/plugin.json"))["version"])')
+IFS='.' read -r major minor patch <<< "$version"
 new_version="${major}.${minor}.$((patch + 1))"
 
-for plugin_json in "${PLUGIN_JSONS[@]}"; do
-python3 - "$plugin_json" "$new_version" <<'PY'
+python3 - "$PLUGIN_JSON" "$new_version" <<'PY'
 import json, sys
 path, new_version = sys.argv[1], sys.argv[2]
 data = json.load(open(path))
@@ -41,6 +20,5 @@ with open(path, "w") as f:
     json.dump(data, f, indent=2)
     f.write("\n")
 PY
-git add "$plugin_json"
-done
-echo "Bumped plugin version: ${current} -> ${new_version}"
+git add "$PLUGIN_JSON"
+echo "Bumped Claude plugin version: ${version} -> ${new_version}"
