@@ -11,7 +11,7 @@ description: Migrates an old build-stack or earlier Autobuild project onto curre
 - Fail a gate → redo the step, using the gate's findings.
 - Fail the same gate twice → stop, ask the user.
 
-Resolve every `../../` path from this `SKILL.md`. In Claude Code, that root is `${CLAUDE_PLUGIN_ROOT}`.
+Resolve every `../../` path from this `SKILL.md`, against `${CLAUDE_PLUGIN_ROOT}`.
 
 Read `../../ladder.md` first — it shows where this skill sits in the whole stack.
 
@@ -141,7 +141,7 @@ Gate: every backlog item and changelog entry survives. The same phases remain cl
 
 ## Step 5 — Review and close
 
-Spawn a fresh flagship, read-only review subagent with no conversation history.
+Spawn a blind agent at the flagship tier.
 
 In legacy mode, show it the PRD and current phase documents. It checks:
 
@@ -179,4 +179,4 @@ Gate: zero findings remain. Legacy mode ends clean. Upgrade mode preserves every
 
 Build only from the steps above.
 
-Pass loads and follows `autobuild:autobuild`. Fail returns to Step 2 with the findings.
+Pass moves to `autobuild:autobuild` — call the Skill tool with that id. Fail returns to Step 2 with the findings.

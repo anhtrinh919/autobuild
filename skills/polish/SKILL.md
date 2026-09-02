@@ -11,7 +11,7 @@ description: Drains backlog items in one shippable batch. Trigger when users pro
 - Fail a gate → redo the step, using the gate's findings.
 - Fail the same gate twice → stop, ask the user.
 
-Resolve every `../../` path from this `SKILL.md`. In Claude Code, that root is `${CLAUDE_PLUGIN_ROOT}`.
+Resolve every `../../` path from this `SKILL.md`, against `${CLAUDE_PLUGIN_ROOT}`.
 
 Read `../../ladder.md` first — it shows where this skill sits in the whole stack.
 
@@ -49,7 +49,7 @@ Gate: the intake preserves every submitted item, and each appears in `backlog.md
 
 ## Step 2 — Ground
 
-For any item whose fix is unclear, use a fresh mechanical research agent for a light pass. Give it no conversation history. If agents are unavailable, search in this thread. Look at 1 or 2 comparable cases, not a full teardown.
+For any item whose fix is unclear, dispatch `crawler` at the mechanical tier for a light pass. Give it no conversation history. If agents are unavailable, search in this thread. Look at 1 or 2 comparable cases, not a full teardown.
 
 Gate: every item chosen for this batch has a clear, checkable fix in mind.
 
@@ -97,7 +97,7 @@ Record positive facts only. A negating word stating a capability — "never fail
 
 Report a table, one row per item in the batch: the original issue, what was done, and the outcome. Flag a not-done item clearly, in its own row, never folded into a done row.
 
-Spawn a fresh deliberate, read-only review subagent with no conversation history.
+Spawn a blind agent at the deliberate tier.
 
 Use flagship for security, migration, concurrency, core data, public APIs, or three-system changes.
 

@@ -15,7 +15,7 @@ Global runs once, for the whole product, and writes `prd.md`. Per-phase runs aga
 - Fail a gate → redo the step, using the gate's findings.
 - Fail the same gate twice → stop, ask the user.
 
-Resolve every `../../` path from this `SKILL.md`. In Claude Code, that root is `${CLAUDE_PLUGIN_ROOT}`.
+Resolve every `../../` path from this `SKILL.md`, against `${CLAUDE_PLUGIN_ROOT}`.
 
 Read `../../ladder.md` first — it shows where this skill sits in the whole stack.
 
@@ -27,7 +27,7 @@ Draft or uncommitted approved phase stories resume per-phase mode at their first
 
 ## Step 1 — Ground
 
-Spawn two fresh standard research agents with no conversation history. Give each agent one search.
+Dispatch two `crawler` agents at the standard tier, with no conversation history. Give each agent one search.
 
 Each prompt names the product or phase, target users, known constraints, and exact research question.
 
@@ -191,7 +191,7 @@ Gate: show the doc to the user. Get their approval.
 
 ## Step 6 — Review and close
 
-Create a review-only checklist from the approved decisions. Spawn a fresh deliberate, read-only subagent with no conversation history.
+Create a review-only checklist from the approved decisions. Spawn a blind agent at the deliberate tier.
 
 Use flagship when the document changes security, migration, concurrency, core data, public APIs, or three-system work.
 
@@ -218,6 +218,6 @@ Gate: the status is `approved`. The working tree is clean. The remote matches th
 
 Build only from the steps above.
 
-Global pass loads and follows `autobuild:autobuild` now.
+Global pass moves to `autobuild:autobuild` — call the Skill tool with that id.
 
-Per-phase pass loads and follows `autobuild:spec` now. Fail returns to Step 3 with the findings.
+Per-phase pass moves to `autobuild:spec` — call the Skill tool with that id. Fail returns to Step 3 with the findings.

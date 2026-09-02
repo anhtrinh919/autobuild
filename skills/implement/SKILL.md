@@ -22,7 +22,7 @@ Per phase only. Reads `spec/<phase>/contract.md`, `spec/<phase>/features.md`, `s
   - a plan too broken to guess a path through
   - any decision Step 2's grading marks as reach
 
-Resolve every `../../` path from this `SKILL.md`. In Claude Code, that root is `${CLAUDE_PLUGIN_ROOT}`.
+Resolve every `../../` path from this `SKILL.md`, against `${CLAUDE_PLUGIN_ROOT}`.
 
 Read `../../ladder.md` first — it shows where this skill sits in the whole stack.
 
@@ -38,6 +38,8 @@ If either branch fact is missing, return to Step 1 and ask the user to confirm t
 
 ## Step 1 — Plan
 
+Enter plan mode.
+
 Map the files first: which files get created, which get modified, and the one job each file does.
 
 Break the work into tasks. Each task is one small file group, and can be finished and committed on its own.
@@ -52,9 +54,9 @@ Gate: every contract line maps to a task, checked one by one.
 
 Assign each task a tier. Use standard unless its scope meets a higher tier's rule in `../../ladder.md`.
 
-Show the complete plan to the user. Get approval before writing it or creating the branch.
+Exit plan mode. This is the plan's approval gate.
 
-Gate: the user approved the complete plan.
+Gate: the user approved the complete plan, before any file was written or a branch created.
 
 Record the current branch as the plan's base branch.
 
@@ -88,17 +90,19 @@ A one-way door has dependent work. Reach changes what users see, do, pay for, or
 
 A reach decision stops and asks the user. Name no-reach choices and explain one-way choices in this turn.
 
-For each uncommitted task, spawn a fresh writer subagent with no conversation history. Give it the task block, applicable contract facts, and exact allowed paths.
+For each uncommitted task, spawn a fresh writer subagent with no conversation history. Give it the task block, applicable contract facts, exact allowed paths, and every decision already settled for this task.
 
 Tell it to change only its task's Files. It must not commit, switch branches, or change any other path.
 
 Tell it to stop before editing when it finds an ungraded decision. The parent grades it and asks for reach.
 
+Record each answer in the task's block, then respawn the writer with it. A settled decision reaches every later writer this way.
+
 Tell it to search prior art for general parts. It reports what it used or why nothing fit.
 
 Tell it to name the break, write one failing test, run its exact Run command, and make the smallest passing change.
 
-Tell it to refactor only while green. Add no new behavior.
+Tell it to refactor only while green. Keep the behavior identical.
 
 Tell it to poll real async conditions, compute expected values independently, and test its own boundary.
 
@@ -124,7 +128,7 @@ Gate: every mutation made at least one test fail. An uncaught mutation leaves th
 
 Gate: any new dependency is a real, maintained package.
 
-Spawn a fresh, read-only review subagent before committing each batch. Use deliberate for standard or deliberate batches.
+Spawn a blind agent to review each batch before committing it. Use deliberate for standard or deliberate batches.
 
 Use flagship for a flagship batch. Use exceptional for an exceptional batch.
 
@@ -154,9 +158,9 @@ Gate: zero tests fail. Every contract line is accounted for in the code.
 
 ## Step 4 — Review and close
 
-Review the phase's full diff against `spec/<phase>/contract.md`.
+Review the phase's full diff against `spec/<phase>/contract.md`. This review checks contract compliance only.
 
-Spawn a fresh, read-only subagent with no conversation history. Show it the contract, plan, and phase diff.
+Spawn a blind agent. Show it the contract, plan, and phase diff.
 
 Use exceptional when any task uses exceptional. Otherwise use flagship when any task uses flagship.
 
@@ -178,6 +182,6 @@ Gate: zero review findings remain. The plan status is `verified`. The working tr
 
 Build only from the steps above.
 
-Pass loads and follows `autobuild:wrap` now.
+Pass moves straight to `autobuild:wrap` — call the Skill tool with that id.
 
 Fail Step 4 twice with no graded decision. Grade it under Step 2 before moving on.

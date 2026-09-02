@@ -15,7 +15,7 @@ Writes to `changelog.md` and `backlog.md` at the project root — shared across 
 - Fail a gate → redo the step, using the gate's findings.
 - Fail the same gate twice → stop, ask the user.
 
-Resolve every `../../` path from this `SKILL.md`. In Claude Code, that root is `${CLAUDE_PLUGIN_ROOT}`.
+Resolve every `../../` path from this `SKILL.md`, against `${CLAUDE_PLUGIN_ROOT}`.
 
 Read `../../ladder.md` first — it shows where this skill sits in the whole stack.
 
@@ -39,7 +39,9 @@ Gate: zero tests fail.
 
 ## Step 2 — Audit
 
-Spawn a fresh deliberate, read-only review subagent with no conversation history. Point it at the phase's full diff.
+This audit grades code quality and risk. Implement already checked the contract, line by line.
+
+Spawn a blind agent at the deliberate tier. Point it at the phase's full diff.
 
 Use flagship for security, migration, concurrency, core data, public APIs, or three-system changes.
 
@@ -55,15 +57,13 @@ Skip this step if the phase shipped no running surface.
 
 Derive deterministic checks from this phase's stories. Use one scripted hit per new endpoint or screen.
 
-Use curl for endpoints. Use an existing project-native render or route check for screens.
+Use curl for endpoints. Drive every screen through `/browse`.
 
-Inspect an existing screenshot when the project already produces one. Add no browser dependency for this step.
+Spawn a `dogfood` agent at the deliberate tier for a phase that shipped screens. It walks the running app through `/browse`, blind to the repo, and reports what it walked, what broke, and what it never reached.
 
-If a screen has no existing check, mark its stories unverified. Add no test tool for this step.
+Show every story the walk never reached to the user. Continue only when the user accepts that coverage gap.
 
-Show every unverified story to the user. Continue only when the user accepts that coverage gap.
-
-Read only running output: status codes, logs, rendered output, or existing screenshots.
+Read running output: status codes, logs, rendered output, screenshots, and the walk's own report.
 
 A story that calls the product's agent needs one live call. Seed mock data for its other states.
 
@@ -73,7 +73,7 @@ Fix every break on a user story's path now. Ask before logging an unrelated roug
 
 A felt rough edge is never silently backlogged. The user picks fix-now or backlog.
 
-Gate: every checkable story passed. The user accepted each unverified story.
+Gate: every checkable story passed. The user accepted every story the walk never reached.
 
 ## Step 4 — Docs
 
@@ -124,6 +124,6 @@ Gate: if merged, the base branch's tests pass — run fresh, not assumed.
 
 Every step above passed. Verify and runtime checks already caught what needed catching.
 
-After a merge, check the Roadmap. Load and follow `autobuild:explore` for the next phase, or end it.
+After a merge, check the Roadmap. Move to `autobuild:explore` for the next phase — call the Skill tool with that id — or end the roadmap.
 
 After a pull request, keep, or discard action, stop.

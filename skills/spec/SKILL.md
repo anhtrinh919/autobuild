@@ -13,7 +13,7 @@ Per phase only. Reads `spec/<phase>/user-stories.md` and `prd.md` — never anot
 - Fail a gate → redo the step, using the gate's findings.
 - Fail the same gate twice → stop, ask the user.
 
-Resolve every `../../` path from this `SKILL.md`. In Claude Code, that root is `${CLAUDE_PLUGIN_ROOT}`.
+Resolve every `../../` path from this `SKILL.md`, against `${CLAUDE_PLUGIN_ROOT}`.
 
 Read `../../ladder.md` first — it shows where this skill sits in the whole stack.
 
@@ -23,13 +23,13 @@ A draft, statusless, or uncommitted approved `features.md` resumes at the first 
 
 ## Step 1 — Ground
 
-Spawn one fresh standard research agent with no conversation history. It finds real products that solve this feature.
+Dispatch one `crawler` at the standard tier, with no conversation history. It finds real products that solve this feature.
 
 Its prompt includes the phase scope, user stories, target users, known constraints, and exact research question.
 
 It reads their app-store reviews and competitor help docs for each one.
 
-Use public product flows when available through existing tools. Add no browser dependency for this step.
+Walk a free trial's own flow yourself with `/browse`, where one exists. A `crawler` reads about a product; `/browse` uses it.
 
 For each app, count the user's steps, and note every decision point and point of friction.
 
@@ -143,7 +143,7 @@ Gate: show `features.md` to the user. Get their approval.
 
 ## Step 6 — Review and close
 
-Spawn a fresh deliberate, read-only subagent with no conversation history.
+Spawn a blind agent at the deliberate tier.
 
 Use flagship when the contract includes security, migration, concurrency, core data, public APIs, or three-system work.
 
@@ -166,4 +166,4 @@ Gate: zero review findings remain. Features are `approved`. The working tree is 
 
 Build only from the steps above.
 
-Pass loads and follows `autobuild:implement` now. Fail returns to Step 4 with the findings.
+Pass moves straight to `autobuild:implement` — call the Skill tool with that id. Fail returns to Step 4 with the findings.

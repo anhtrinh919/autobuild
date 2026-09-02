@@ -11,7 +11,7 @@ description: Archives a build and opens a clean path for a pivot. Trigger when u
 - Fail a gate → redo the step, using the gate's findings.
 - Fail the same gate twice → stop, ask the user.
 
-Resolve every `../../` path from this `SKILL.md`. In Claude Code, that root is `${CLAUDE_PLUGIN_ROOT}`.
+Resolve every `../../` path from this `SKILL.md`, against `${CLAUDE_PLUGIN_ROOT}`.
 
 Read `../../ladder.md` first — it shows where this skill sits in the whole stack.
 
@@ -74,6 +74,6 @@ Build only from the steps above.
 
 Gate on the outcome: the archived path has everything the live project had, tagged and dated. The fresh path is empty except `.git` and one `changelog.md` entry.
 
-Pass loads and follows `autobuild:explore` in global mode. Fail returns to Step 1 with the findings.
+Pass moves to `autobuild:explore` in global mode — call the Skill tool with that id. Fail returns to Step 1 with the findings.
 
 Fix what it finds, once, then move on — it never runs a second time to confirm. Ask the user only if a finding itself is unclear.

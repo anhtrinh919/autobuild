@@ -11,7 +11,7 @@ description: Finds the open build phase and loads the next skill. Trigger when u
 - Fail a gate → redo the step, using the gate's findings.
 - Fail the same gate twice → stop, ask the user.
 
-Resolve every `../../` path from this `SKILL.md`. In Claude Code, that root is `${CLAUDE_PLUGIN_ROOT}`.
+Resolve every `../../` path from this `SKILL.md`, against `${CLAUDE_PLUGIN_ROOT}`.
 
 Read `../../ladder.md` first — it shows where this skill sits in the whole stack.
 
@@ -103,18 +103,18 @@ Gate: exactly one skill is named, matching the first gap found.
 
 ## Step 4 — Hand off
 
-An interrupted polish branch loads and follows `autobuild:polish`.
+An interrupted polish branch routes to `autobuild:polish`.
 
-An earlier Autobuild project loads and follows `autobuild:migrate` in upgrade mode.
+An earlier Autobuild project routes to `autobuild:migrate` in upgrade mode.
 
-An old-stack project loads and follows `autobuild:migrate`.
+An old-stack project routes to `autobuild:migrate`.
 
-A fresh project loads and follows `autobuild:explore` in global mode.
+A fresh project routes to `autobuild:explore` in global mode.
 
-A draft PRD loads and follows `autobuild:explore` in global mode.
+A draft PRD routes to `autobuild:explore` in global mode.
 
 Every phase closed means the roadmap is done. Say so, and stop.
 
-Otherwise, say which phase is open and which document or directory is missing. Load and follow the named qualified skill now.
+Otherwise, say which phase is open and which document or directory is missing. Then call the Skill tool with the named skill's qualified id.
 
-Gate: the named skill loads, or the roadmap-done message appears. Exactly one outcome occurs.
+Gate: the Skill tool was called with the right qualified id, or the roadmap-done message appeared — never both.

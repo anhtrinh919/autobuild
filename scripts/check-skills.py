@@ -15,10 +15,37 @@ for skill in skills:
     text = skill.read_text()
     assert f"name: {skill.parent.name}" in text, f"wrong name in {skill}"
     assert "update-state.py" not in text, f"obsolete state script referenced in {skill}"
+    assert "${CLAUDE_PLUGIN_ROOT}" in text, f"{skill} does not name the Claude plugin root"
     if skill.parent.name not in {"autobuild", "migrate", "wrap"}:
         assert "`state.json`" not in text, f"obsolete state routing remains in {skill}"
     for relative in re.findall(r"`(\.\./\.\./[^`]+)`", text):
         assert (skill.parent / relative).resolve().exists(), f"missing {relative} from {skill}"
+
+# Claude-native mechanisms, restored after the Codex port genericised them.
+handoffs = {
+    "implement": "`autobuild:wrap` — call the Skill tool with that id",
+    "spec": "`autobuild:implement` — call the Skill tool with that id",
+    "explore": "`autobuild:spec` — call the Skill tool with that id",
+    "migrate": "`autobuild:autobuild` — call the Skill tool with that id",
+    "replan": "`autobuild:explore` in global mode — call the Skill tool with that id",
+    "wrap": "`autobuild:explore` for the next phase — call the Skill tool with that id",
+}
+for name, phrase in handoffs.items():
+    text = (root / f"skills/{name}/SKILL.md").read_text()
+    assert phrase in text, f"{name} does not hand off through the Skill tool"
+
+implement_text = (root / "skills/implement/SKILL.md").read_text()
+assert "Enter plan mode." in implement_text, "implement does not enter plan mode"
+assert "Exit plan mode. This is the plan's approval gate." in implement_text, "implement does not gate on plan mode"
+
+for name in ("explore", "spec", "polish"):
+    text = (root / f"skills/{name}/SKILL.md").read_text()
+    assert "`crawler`" in text, f"{name} does not dispatch crawler for research"
+
+wrap_text = (root / "skills/wrap/SKILL.md").read_text()
+assert "`dogfood`" in wrap_text, "wrap does not spawn dogfood for the running surface"
+assert "`/browse`" in wrap_text, "wrap does not drive screens through /browse"
+assert "`/browse`" in (root / "skills/spec/SKILL.md").read_text(), "spec does not walk trials through /browse"
 
 router = (root / "skills/autobuild/SKILL.md").read_text()
 for route in ("autobuild:migrate", "autobuild:explore", "autobuild:spec", "autobuild:implement", "autobuild:wrap", "roadmap is done"):
