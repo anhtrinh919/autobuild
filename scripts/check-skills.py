@@ -54,7 +54,7 @@ for route in ("autobuild:migrate", "autobuild:explore", "autobuild:spec", "autob
 assert "status is `verified`" in router, "router does not guard unfinished implementation"
 assert "exact heading `## <phase-id>`" in router, "router does not use exact phase closure"
 assert "autobuild.polish-action" in router, "router cannot recover an interrupted polish action"
-assert "Polish intake" in router, "router cannot recover polish collection"
+assert "working or committed `polish-plan.md`" in router, "router cannot recover polish collection"
 assert "earlier Autobuild project" in router, "router cannot detect the previous Autobuild schema"
 assert "compatibility project" in router, "router cannot preserve previous completion routing"
 assert "recorded phase against the working `changelog.md`" in router, "compatibility routing changes old phase closure"
@@ -73,9 +73,22 @@ wrap = (root / "skills/wrap/SKILL.md").read_text()
 assert "legacy-snapshot" in wrap, "wrap cannot recover a previous plan's base"
 
 polish = (root / "skills/polish/SKILL.md").read_text()
-assert "Plan: pending" in polish, "polish lacks recoverable pre-branch state"
-assert "uncommitted plan resumes Step 4" in polish, "polish cannot recover an uncommitted plan"
+assert "Status: intake" in polish, "polish lacks recoverable pre-branch state"
+assert "first batch with `Status: pending` resumes Step 4" in polish, "polish cannot recover an unplanned batch"
+assert "first batch with `Status: approved` resumes Step 5" in polish, "polish cannot recover an approved batch"
 assert "Write the action last" in polish, "polish action marker is not crash-safe"
+assert polish.index("An intake plan resumes Step 1") < polish.index("Otherwise, read the planning or draining plan"), "polish restores a branch before checking intake status"
+assert "Enter plan mode." in polish, "polish does not plan a batch in plan mode"
+assert "Exit plan mode. This is the batch's approval gate." in polish, "polish does not gate a batch on plan mode"
+assert "Ask the user to confirm the items and the split" in polish, "polish batches without the user's confirmation"
+assert "who it affects and what it costs them" in polish, "polish confirmation omits item impact"
+assert "Return to Step 4 while a pending batch remains" in polish, "polish drains every batch on one plan"
+assert "changes the root cause or fix returns the item to Step 4" in polish, "polish can drift from the approved diagnosis"
+assert "Before leaving the polish branch, remove `polish-plan.md`" in polish, "polish loses recovery before branch fate"
+
+backlog = (root / "skills/wrap/schemas/backlog.md").read_text()
+assert "Open entries: 30 words, 1 sentence, 1 bullet" in backlog, "backlog entries can expand beyond one line"
+assert "## Polish intake" not in backlog and "## Active polish" not in backlog, "backlog still stores polish working state"
 
 ladder = (root / "ladder.md").read_text()
 assert "## Subagent tiers" in ladder, "dispatch tiers are undocumented"

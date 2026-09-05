@@ -27,7 +27,7 @@ Read lifecycle statuses with `git show HEAD:<path>`, not an uncommitted working 
 
 Check these project states in order. Stop at the first match.
 
-A local `autobuild.polish-action` Git config value, a Polish intake or Active polish block in the working or committed `backlog.md`, or a `polish-<timestamp>` branch marks an interrupted Polish run. Name `autobuild:polish`.
+A local `autobuild.polish-action` Git config value, or a working or committed `polish-plan.md`, marks an interrupted Polish run. Name `autobuild:polish`.
 
 A committed `state.json` plus a committed statusless or `migrating` PRD marks an earlier Autobuild project when the state shape matches.
 
@@ -103,7 +103,7 @@ Gate: exactly one skill is named, matching the first gap found.
 
 ## Step 4 — Hand off
 
-An interrupted polish branch routes to `autobuild:polish`.
+An interrupted Polish run routes to `autobuild:polish`.
 
 An earlier Autobuild project routes to `autobuild:migrate` in upgrade mode.
 
