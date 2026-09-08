@@ -5,9 +5,11 @@ description: Turns a phase contract into tested code through an approved plan. T
 
 # Implement
 
-Per phase only. Reads `spec/<phase>/contract.md`, `spec/<phase>/features.md`, `spec/<phase>/design-brief.md`, `spec/<phase>/user-stories.md`, `spec/<phase>/research.md`, and `prd.md` — never another phase's `spec/`.
+Per phase only. Reads `spec/<phase>/contract.md`, `spec/<phase>/features.md`, `spec/<phase>/design-brief.md`, `spec/<phase>/design/`, `spec/<phase>/design-review.md`, `spec/<phase>/user-stories.md`, `spec/<phase>/research.md`, and `prd.md` — never another phase's `spec/`.
 
 `design-brief.md` is a snapshot of the day it was written. The contract carries the phase forward, and the contract wins wherever the two disagree.
+
+`spec/<phase>/design/` is what a screen has to look like. The winners in `design-review.md` name each screen that differs from it on purpose.
 
 - Step: one unit of work.
 - Gate: the check at the end of a step.
@@ -30,7 +32,7 @@ Read the project's `writing-rule.md` next — scaffold it from `../../writing-ru
 
 If committed `plan.md` has no status, set it to `building`.
 
-An uncommitted `verified` status resumes Step 4 and finishes its commit.
+An uncommitted `verified` status resumes Step 5 and finishes its commit.
 
 A building plan resumes at Step 2 only when it names the base branch and the phase branch is active.
 
@@ -48,7 +50,7 @@ Write every task in full — the exact paths, the real test code, the exact comm
 
 Check the plan against the contract, line by line: does every endpoint, rule, and field map to a task? Check every task's names and types against every other task: the same field or function must read the same everywhere.
 
-Gate: grep the plan for "TBD", "TODO", "similar to", or "add appropriate" — zero hits.
+Gate: read the plan — zero hits for "TBD", "TODO", "similar to", or "add appropriate".
 
 Gate: every contract line maps to a task, checked one by one.
 
@@ -156,7 +158,27 @@ Check the contract line by line against the code:
 
 Gate: zero tests fail. Every contract line is accounted for in the code.
 
-## Step 4 — Review and close
+## Step 4 — Visual check
+
+Skip this step when the phase shipped no screen, or when `spec/<phase>/design/` holds no design file.
+
+Start the product. Drive every screen this phase touched through `/browse`.
+
+Screenshot each screen, in every state the design draws.
+
+Spawn a blind agent at the deliberate tier. Give it the screenshots, the files in `spec/<phase>/design/`, and `spec/<phase>/design-review.md`.
+
+It compares each screen to its own design file. It reports every visible difference: layout, spacing, colour, type, copy, state, and any element that is absent.
+
+A difference the brief won in `design-review.md` is correct as built. The agent reports the rest.
+
+Fix every reported difference now. Rerun the focused tests each fix touches.
+
+Gate: every phase screen was screenshotted and compared, state by state.
+
+Gate: zero reported differences remain.
+
+## Step 5 — Review and close
 
 Review the phase's full diff against `spec/<phase>/contract.md`. This review checks contract compliance only.
 
@@ -184,4 +206,4 @@ Build only from the steps above.
 
 Pass moves straight to `autobuild:wrap` — call the Skill tool with that id.
 
-Fail Step 4 twice with no graded decision. Grade it under Step 2 before moving on.
+Fail Step 5 twice with no graded decision. Grade it under Step 2 before moving on.

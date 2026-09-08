@@ -73,21 +73,34 @@ Gate: show the brief to the user. Get their approval.
 
 Hand the brief to the user. Wait — nothing runs while you wait.
 
-The user designs it: in this session with a design skill, or outside it with another tool. Either way, they hand back the result.
+The user designs it: in this session with a design skill, or outside it with another tool. The user puts the mockups or images in `spec/<phase>/design/`.
 
-Ask the user directly: does this design outrank the brief anywhere, or should it match the brief as written?
+Walk the brief against the design, one item at a time: every screen, every state, every criterion, and every rule under `What has to hold`.
 
-Check the design against the brief, screen by screen.
+Sort each mismatch into one of two kinds:
 
-Outrank: rewrite `design-brief.md` in place, now, to match the design's actual mismatches.
+- Gap — the design has no answer for the item, or contradicts a rule the brief states.
+- Divergence — the design answers the item another way, or better than the brief asked.
 
-No: a mismatch found here is a miss, not a call. Fail this gate with it — same as any other finding.
+Write every gap to `spec/<phase>/design-review.md`, following `../../skills/spec/schemas/design-review.md`. The user sends it to the designer.
 
-Gate: the design exists — mockups or images, handed back by the user. It matches the brief, or a mismatch was resolved one of the two ways above.
+Record positive facts only. A negating word stating a capability — "never fails," "nothing to install" — is not an exclusion.
+
+Wait for the new design — nothing runs while you wait. Walk the brief against it again.
+
+Ask the user about each divergence on its own: does the design win here, or the brief? Never ask about several at once.
+
+Record every answer in `design-review.md`, one line per item, with its winner.
+
+`design-brief.md` is frozen from here. Step 4 writes the contract from the design and these recorded winners.
+
+Gate: the design exists in `spec/<phase>/design/`. Every brief item was walked against it, one by one.
+
+Gate: `design-review.md` holds every divergence with its winner, and zero open gaps.
 
 ## Step 4 — Contract
 
-Write `spec/<phase>/contract.md`, following `../../skills/spec/schemas/contract.md`, from the design, the user stories, and `prd.md`.
+Write `spec/<phase>/contract.md`, following `../../skills/spec/schemas/contract.md`, from the design, the winners recorded in `design-review.md`, the user stories, and `prd.md`.
 
 Record positive facts only. A negating word stating a capability — "never fails," "nothing to install" — is not an exclusion.
 
