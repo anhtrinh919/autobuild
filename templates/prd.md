@@ -6,6 +6,8 @@
 # <one-line outcome>
 ```
 
+A living doc. It always states the product as intended today, rewritten in place.
+
 Status: `draft` during Explore or `migrating` during Migrate. Set `approved` after final review.
 
 ## Concept
@@ -15,6 +17,12 @@ One paragraph. What this is, who it is for, why it matters now.
 ## North star
 
 One line. What a user remembers or feels after using this.
+
+## Product principles
+
+Three to seven rules a reviewer can judge a screen against. Each names something a user feels, not a feature.
+
+- <principle> — <what honouring it looks like on a screen>
 
 ## Target users
 
@@ -40,13 +48,9 @@ Grouped by feature. Each requirement is a rule, not a description.
 
 ## Non-functional requirements
 
-One line per requirement that applies, each with a number, not an adjective. Skip a category with nothing to say.
+One line per target the user stated or research proved, each with a number, not an adjective. Skip the section when none exists.
 
-- Performance: <a specific target, e.g. responds inside 2 seconds>
-- Security: <a specific rule, e.g. passwords never stored in plain text>
-- Reliability: <a specific target, e.g. 99.9% uptime>
-- Scalability: <a specific ceiling, e.g. holds 1,000 concurrent users>
-- Usability: <a specific target, e.g. a new user completes signup in under 2 minutes>
+- <category: performance, security, reliability, scale, or usability>: <the target, with its number>
 
 ## Assumptions and constraints
 
@@ -54,18 +58,21 @@ One per line, each tagged.
 
 - Assumption: <believed true, not yet verified>
 - Constraint: <a hard limit — budget, technology, timeline>
+- Non-goal: <what the user chose to leave out of the whole product, and why>
+
+Write a constraint or non-goal only when the user stated it or research proved it.
 
 ## Roadmap
 
-One phase per line, in build order. Each line owns one exact phase ID and directory.
+One phase per line, in build order. Each line owns one exact phase ID, directory, and status.
 
-- [phase-<N>-<slug>] <name>: <what it delivers> — <why it is next>
+- [phase-<N>-<slug>] `planned` <name>: <what it delivers> — <why it is next>
+
+Status is `planned` until Wrap ships the phase, then `shipped`. The router reads only this status.
 
 The phase directory is `spec/<phase-id>`. Use lowercase kebab-case. Never derive it later.
 
-Phase 1 is a thin shell — navigable structure, no real feature work yet. Guard this: the moment "shell" grows a real feature, it's no longer Phase 1's job.
-
-The phase or phases after it deliver the core promise — the one thing the product fundamentally does. This is the foundation the MVP gets built on, not the MVP itself. It can span more than one phase.
+The first phases deliver the core promise — the one thing the product fundamentally does — end to end, as thin as it can run.
 
 Every phase after that is one vertical slice — one thing the product can do, or the user can.
 

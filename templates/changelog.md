@@ -2,6 +2,8 @@
 
 10 words a line. One line per entry. Newest entry first.
 
+A living doc. Add one entry per phase or polish run, newest first.
+
 ## <entry-id>
 
 Use the exact phase ID for phase work. Use the exact polish branch name for polish work.

@@ -1,6 +1,8 @@
+# research.md schema
+
 20 words a sentence. 2 sentences a line.
 
-# research.md schema
+A snapshot doc. Date it. It is never revised after its phase ships.
 
 This phase's research only. A finding here does not apply to any other phase.
 
@@ -25,7 +27,7 @@ What already solves this phase's problem, as a package, service, platform featur
 
 - `<name>` — <what it does, and what remains for this phase>
   - Cost: <size, licence, what it pulls in, what it assumes>
-  - Health: <weekly downloads, last release, whether it is maintained>
+  - Health: <its adoption signal — downloads, stars, or users — its last release, and whether it is maintained>
   - Source: <url>
 
 Write plainly when the search came back with nothing that fits. That answer is a finding too.

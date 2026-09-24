@@ -5,24 +5,21 @@ description: Migrates an old build-stack or earlier Autobuild project onto curre
 
 # Migrate
 
-- Step: one unit of work.
-- Gate: the check at the end of a step.
-- Pass a gate → move to the next step.
-- Fail a gate → redo the step, using the gate's findings.
-- Fail the same gate twice → stop, ask the user.
+Reads an older project's files, legacy or earlier Autobuild. Writes Autobuild's `prd.md`, current-phase documents, `backlog.md`, and `changelog.md`.
 
-Resolve every `../../` path from this `SKILL.md`, against `${CLAUDE_PLUGIN_ROOT}`.
+Read `../../stack.md` first. Resolve `../../` paths against `${CLAUDE_PLUGIN_ROOT}`.
 
-Read `../../ladder.md` first — it shows where this skill sits in the whole stack.
-
-Read the project's `writing-rule.md` next — scaffold it from `../../writing-rule.md` if missing. It sets the prose style for every doc this skill writes.
-
-Two modes:
+## Rules
 
 - Legacy mode maps `.build-state.json` or `specs/` into Autobuild.
-- Upgrade mode updates an earlier Autobuild project in place.
+- Upgrade mode updates an earlier Autobuild project in place, and removes its `state.json`.
+- Choose one mode in Step 1. Keep that mode through the final gate.
 
-Choose one mode in Step 1. Keep that mode through the final gate.
+## Resume
+
+- A working `migrating` PRD marks an interrupted upgrade. Resume its first incomplete step.
+- Reuse the untracked-hash record from Step 1 when resuming.
+- On resume, accept only staged routing-metadata hunks created by this upgrade. Stop when another staged hunk exists.
 
 ## Step 1 — Locate
 
@@ -32,13 +29,10 @@ If `.build-state.json` exists, read its `phase` and `step` fields.
 
 If it is absent, list the directories under `specs/`. Ask the user which phase is current.
 
-In upgrade mode, find a committed `state.json`, committed PRD, and `spec/` directory.
+In upgrade mode, find a committed `state.json`, committed PRD, and `spec/` directory. The state has one of two shapes:
 
-Validate that state has `prd`, `changelog`, `backlog`, and `phases` keys. Its PRD status is missing or `migrating`.
-
-Recompute its phase booleans from files on disk. The earlier router refreshed those values before routing.
-
-A working `migrating` PRD or routing mode `legacy-snapshot` marks an interrupted upgrade. Resume its first incomplete step.
+- Earlier Autobuild — `prd`, `changelog`, `backlog`, and `phases` keys, with a statusless or `migrating` PRD. Recompute its phase booleans from files on disk, as the earlier router did.
+- Compatibility — a `routing` object with mode `legacy-snapshot`, and an approved PRD. Every phase before `through` is closed. The recorded `phase` is closed when the working `changelog.md` has its exact heading.
 
 Before the first edit, record `git status --short`, `git diff`, and `git diff --cached`.
 
@@ -46,11 +40,7 @@ List untracked files with `git ls-files --others --exclude-standard -z`. Hash ea
 
 Store paths and hashes at the path from `git rev-parse --git-path autobuild-migrate-untracked`.
 
-Reuse that record when resuming.
-
 Before the first edit, stop when any change is staged or an existing edit overlaps routing metadata.
-
-On resume, accept only staged routing-metadata hunks created by this upgrade. Stop when another staged hunk exists.
 
 Use the earlier router's roadmap and changelog rules. The first phase without its changelog entry is current.
 
@@ -60,22 +50,24 @@ When the current phase has a plan, record the current branch as base if it is `m
 
 If that branch is neither, ask the user for the plan's base branch.
 
-Gate: the mode and root are known. Upgrade mode names its current phase or confirms every phase closed.
-
-Gate: upgrade mode knows the base when its current phase already has a plan.
-
-Gate: legacy mode knows its current phase. It knows step state when `.build-state.json` exists.
+Gate:
+- the mode and root are known
+- upgrade mode names its current phase, or confirms every phase closed
+- upgrade mode knows the base when its current phase already has a plan
+- legacy mode knows its current phase, and its step state when `.build-state.json` exists
 
 ## Step 2 — Map the constitution
 
 In legacy mode, map:
 
-- `mission.md` + `product.md` + `roadmap.md` → `prd.md`'s Concept, North star, Target users, and Roadmap
+- `mission.md` + `product.md` + `roadmap.md` → `prd.md`'s Concept, North star, Target users, and Roadmap. Propose Product principles from them for the user to approve
 - `tech-stack.md`'s decisions → `prd.md`'s Assumptions and constraints, as `Constraint` entries
 
 In legacy mode, give every roadmap phase an approved `phase-<N>-<slug>` ID and matching `spec/<phase-id>` path.
 
-Rewrite each legacy line to Autobuild's word, sentence, and positive-fact rules. A structural copy is not a migration.
+In legacy mode, mark every finished phase `shipped` and every other phase `planned`.
+
+Rewrite each legacy line to Autobuild's word and sentence rules, and its no-invented-limits rule. A structural copy is not a migration.
 
 In upgrade mode, keep every PRD sentence except its routing metadata.
 
@@ -85,7 +77,7 @@ In upgrade mode, write each exact ID into its roadmap line. Keep every existing 
 
 Set the migrated PRD status to `migrating` until the final review passes.
 
-Gate: the PRD has nine sections, status `migrating`, and one exact ID per roadmap phase.
+Gate: the PRD has ten sections, status `migrating`, and one exact ID per roadmap phase.
 
 ## Step 3 — Map the current phase
 
@@ -98,32 +90,28 @@ In legacy mode, map:
 - `requirements.md`'s User Stories → `user-stories.md`'s Stories
 - `outcome-card.md`'s frozen contract → `user-stories.md`'s Scope and `prd.md`'s When-is-done
 - `requirements.md`'s API Contracts and Data Model → `contract.md`
-- `design-brief.md` (external track) → `design-brief.md`
+- `design-brief.md` (external track) → `design.md`'s Handoff section
 - `plan.md` → `plan.md`
 
-In legacy mode, derive `features.md` from the migrated contract, following `../../skills/spec/schemas/features.md`.
-
-In legacy mode, set migrated user stories and features to `draft`.
+In legacy mode, set migrated user stories and contract to `draft`.
 
 In legacy mode, rewrite an existing `plan.md` to the current schema. Set its status to `building`.
 
-In legacy mode, rewrite each line to Autobuild's word, sentence, and positive-fact rules.
+In legacy mode, rewrite each line to Autobuild's word and sentence rules, and its no-invented-limits rule.
 
-In upgrade mode, keep every phase document's content, path, and status unchanged.
+In upgrade mode, keep every phase document's content and path.
 
-Add a `routing` object to `state.json` with mode `legacy-snapshot`.
+In upgrade mode, write each roadmap line's status: `shipped` for every closed phase, `planned` for the rest.
 
-Record `phase`, `through`, `present`, and `base`. Use exact phase IDs and document basenames.
+In upgrade mode, give each current-phase document the earlier router counted as complete the status the current router needs: `approved` for `user-stories.md` and `contract.md`.
 
-`present` lists only current-phase documents found during recomputation. `base` is null when no current plan exists.
+In upgrade mode, write the recorded base into the current phase's `plan.md` when it lacks one.
 
-Set `through` to the current phase, or the last closed phase when none is current.
+In upgrade mode, remove `state.json`.
 
-Use a null phase, empty document list, and null base when every phase is closed.
-
-Gate: legacy mode maps each contract rule and endpoint to one current-phase feature.
-
-Gate: upgrade mode preserves the earlier router's completion result for every existing phase document.
+Gate:
+- legacy mode maps every legacy API contract and data model entry into `contract.md`
+- upgrade mode routes to the same next skill and open phase as the earlier router, with no `state.json`
 
 ## Step 4 — Carry over the trail
 
@@ -146,7 +134,7 @@ Spawn a blind agent at the flagship tier.
 In legacy mode, show it the PRD and current phase documents. It checks:
 
 - Every section of every migrated doc meets its own word and sentence cap.
-- No sentence that excludes or forbids something survived the migration. "Never fails" and "nothing to install" state a fact, not an exclusion.
+- Every limit in the doc was stated by the user or proven by research, and names its scope.
 - The current phase has a matching `spec/<phase>/` on this side. No older phase was migrated.
 
 In upgrade mode, show it the original state, migration diff, and resulting route. It checks:
@@ -159,9 +147,9 @@ In upgrade mode, show it the original state, migration diff, and resulting route
 
 Fix each finding once. Fail returns to Step 2 when a finding remains.
 
-In legacy mode, set the PRD, user stories, and features to `approved`. Keep any plan `building`.
+In legacy mode, set the PRD, user stories, and contract to `approved`. Keep any plan `building`.
 
-In upgrade mode, set the PRD to `approved`. Keep the compatibility snapshot in `state.json`.
+In upgrade mode, set the PRD to `approved`.
 
 In upgrade mode, stage only generated routing-metadata hunks. Never stage a pre-existing diff.
 
@@ -175,8 +163,6 @@ After a successful upgrade commit, remove the Git-local hash record.
 
 Gate: zero findings remain. Legacy mode ends clean. Upgrade mode preserves every prior edit.
 
-## Gate
-
-Build only from the steps above.
+## Hand-off
 
 Pass moves to `autobuild:autobuild` — call the Skill tool with that id. Fail returns to Step 2 with the findings.

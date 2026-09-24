@@ -5,27 +5,42 @@ description: Researches and interviews users to create a PRD or phase stories. T
 
 # Explore
 
-Two modes.
+Reads `prd.md`, `product.md`, and `backlog.md`; writes `prd.md`, or `spec/<phase>/user-stories.md` and `spec/<phase>/research.md`.
 
-Global runs once, for the whole product, and writes `prd.md`. Per-phase runs again, before each phase's spec work, and writes `spec/<phase>/user-stories.md`.
+Read `../../stack.md` first. Resolve `../../` paths against `${CLAUDE_PLUGIN_ROOT}`.
 
-- Step: one unit of work.
-- Gate: the check at the end of a step.
-- Pass a gate → move to the next step.
-- Fail a gate → redo the step, using the gate's findings.
-- Fail the same gate twice → stop, ask the user.
+## Rules
 
-Resolve every `../../` path from this `SKILL.md`, against `${CLAUDE_PLUGIN_ROOT}`.
+Global mode runs once, for the whole product, and writes `prd.md`. Per-phase mode runs again, before each phase's spec work, and writes `spec/<phase>/user-stories.md`.
 
-Read `../../ladder.md` first — it shows where this skill sits in the whole stack.
+Every round follows these rules:
 
-Read the project's `writing-rule.md` next — scaffold it from `../../writing-rule.md` if missing. It sets the prose style for every doc this skill writes.
+- Ask only felt decisions. Decide plumbing yourself, and mark its node `settled` in the tree file.
+- A question that needs an outside fact goes to a `crawler`. Ask the rest of the round while it runs.
+- Number each question, and give your recommended answer, in this format:
+
+> ❓ **Q1** - **<question title>**: <question body, may run multiple paragraphs, may include multiple choices>
+>
+> ➡️ <your recommended answer>
+
+- End the round with one line: reply `ok` to accept every recommendation, or answer by number.
+- An idea raised but not settled may still have value. Log it to `backlog.md` only if the user says yes. Scaffold that file from `../../templates/backlog.md` when missing.
+
+## Resume
 
 A draft or uncommitted approved PRD resumes global mode at its first incomplete step.
 
 Draft or uncommitted approved phase stories resume per-phase mode at their first incomplete step.
 
+An interview tree file resumes the interview at its first `open` node.
+
 ## Step 1 — Ground
+
+Per-phase mode first proposes the phase's track, from its roadmap line and `product.md`. A quick proposal skips both searches, but still reads `prd.md`, `product.md`, and `backlog.md` below. When the interview changes the track to standard or deep, run the searches then.
+
+Per-phase mode skips the prior-art search when `product.md`'s Settled choices already answer this phase's problem.
+
+Per-phase mode records each comparable product's steps and friction too. Spec reuses them instead of searching again.
 
 Dispatch two `crawler` agents at the standard tier, with no conversation history. Give each agent one search.
 
@@ -39,13 +54,13 @@ The second search finds prior art: packages, services, platform features, or pro
 
 Global mode searches the product's core problem. Per-phase mode searches this phase's problem.
 
-For each candidate, record weekly downloads, last release, size, licence, and remaining work.
+For each candidate, record its adoption signal, last release, size, licence, and remaining work.
 
-If subagents are unavailable, run both searches separately in this thread. Wait for both results before Step 2.
+If subagents are unavailable, run both searches separately in this thread. Wait for both results before the first question.
 
 Name the gap this idea could fill, from what it found. That gap grounds the interview, not a general impression of the market.
 
-Per-phase mode also reads `prd.md` — the concept, north star, roadmap, and assumptions ground this phase's interview.
+Per-phase mode also reads `prd.md` and `product.md` — intent, principles, roadmap, and what runs today ground this phase's interview.
 
 If a settled fact in `prd.md` no longer holds — the last phase shipped different from its roadmap line, an assumption proved false — correct it in place, now. This is a routine correction, not a pivot; a real change of direction belongs in `replan`, not here.
 
@@ -53,171 +68,129 @@ Per-phase mode also reads `backlog.md` at the project root, if one exists. It ca
 
 The two searches answer different questions. The first asks what people use. The second asks what this product or phase can integrate.
 
-Gate: name at least 3 real comparable products, each with its gap.
-
 Global mode carries the findings into the interview. Settled findings become PRD decisions.
 
-Per-phase mode writes both searches to `spec/<phase>/research.md`.
+Per-phase mode writes both searches to `spec/<phase>/research.md`, following `../../templates/research.md`. `spec` appends its findings to the per-phase file.
 
-Follow `../../skills/spec/schemas/research.md`. `spec` appends its findings to the per-phase file.
+Gate:
 
-Gate: name what already solves the searched problem, or say nothing fits.
+- name at least 3 real comparable products, each with its gap
+- name what already solves the searched problem, or say nothing fits
+- per-phase mode only: the answer is in `spec/<phase>/research.md`
+- per-phase mode only: `prd.md` matches current reality, or was corrected
 
-Gate: per-phase mode only — the answer is in `spec/<phase>/research.md`.
+## Step 2 — Map the tree
 
-Gate: per-phase mode only — `prd.md` matches current reality, or was corrected.
+Write the interview tree to the path from `git rev-parse --git-path autobuild-interview.md`. It stays out of commits, and survives a crash.
 
-## Step 2 — Grill the shape
+Global mode maps three levels:
 
-Map the interview tree for the shape only:
+- Trunk — the core: concept, north star, target users, and product principles.
+- Branches — the shape: each major area of the product, the actor it serves, what it holds, its non-goals, its constraints, and where it sits in the roadmap.
+- Leaves — the detail under each branch: its stories and criteria, rules, edge cases, targets, and when it is done.
 
-- Global mode: concept, north star, target users.
-- Per-phase mode: this phase's goal, and the actors it serves.
+Per-phase mode maps one level: this phase's goal, actors, track, stories, criteria, `Not in this phase` list, and one question per backlog item.
 
-Ask the frontier in one round. The frontier is every decision whose prerequisites are already settled.
+One line per node, indented under its parent: `open`, or `settled — <the answer>`.
 
-Split the frontier before you ask it. Ask only felt decisions — ones the user would notice, wait on, or feel boxed in by.
+Reread the file before every round, and update it after every answer. It is the only record of where the interview stands.
 
-Decide plumbing decisions yourself — ones the user would never notice either way. Record each as a settled fact, not a question.
+Gate: every node the known facts imply is in the file, under its parent.
 
-An item raised but not settled this round may still have real value. Ask about it in this round; log it to `backlog.md` only if the user says yes.
+## Step 3 — Trunk
 
-`backlog.md` may not exist yet. Scaffold it from `../../skills/wrap/schemas/backlog.md` before the first item lands.
+Per-phase mode skips this step.
 
-Nothing with no future value gets written down at all.
+Ask the trunk questions in one round. Keep it to the few decisions every branch depends on.
 
-Number each question. Give your recommended answer. Use this format:
+Loop until every trunk node is settled.
 
-> ❓ **Q1** - **<question title>**: <question body, may run multiple paragraphs, may include multiple choices>
->
-> ➡️ <your recommended answer>
+Write the settled trunk:
 
-```mermaid
-flowchart LR
-    compute[Compute the frontier] --> fact{Needs a fact\nfrom outside?}
-    fact -->|yes| dispatch[Search the web\nnon-blocking]
-    fact -->|no| ask[Ask the frontier]
-    dispatch -->|rest of frontier| ask
-    ask --> wait[Wait for the user's answers]
-    wait --> reshape[Answers reshape the tree]
-    reshape --> empty{Frontier\nempty?}
-    empty -->|no| compute
-    empty -->|yes| confirm[Confirm shared understanding]
-    confirm --> next([Step 3])
-```
+- An announcement: what it does, who it is for, why it matters, in one paragraph — as if it already shipped.
+- One sentence: for <user>, who <need>, this is a <kind of thing> that <key benefit>. Unlike <the closest alternative>, it <what's different>.
 
-Search for any fact you would otherwise ask the user. Never ask for a fact you can verify.
+If a sentence will not fill in cleanly, the trunk is not settled yet. Ask again.
 
-Keep searching as new branches appear.
+Write concept, north star, product principles, and target users into `prd.md`, following `../../templates/prd.md`. Set its status to `draft`.
 
-Gate: recompute the frontier — it returns zero items. Every shape item above is settled.
+Gate: every trunk node is settled, the user approved the announcement, and `prd.md` holds it.
 
-Name 2 to 6 decisions the interview never reached, that the draft still assumes. Route each as felt (ask now) or plumbing (record it).
+## Step 4 — Branches
 
-The user says yes to the shared understanding.
+Per-phase mode skips this step.
 
-## Step 3 — Shape
+Ask every branch question in one round. A long round is fine — the shape needs all of it at once.
 
-Write the settled shape, using only what it settled.
+Add every branch the answers reveal to the tree. Ask a follow-up round only for questions the answers opened.
 
-Record positive facts only. A negating word stating a capability — "never fails," "nothing to install" — is not an exclusion.
+Show the user the full branch list, in roadmap order.
 
-Global mode writes two things.
+Gate: every branch node is settled, and the user approved the branch list.
 
-First, an announcement: what it does, who it is for, why it matters, in one paragraph — as if it already shipped.
+## Step 5 — Leaves
 
-Second, one sentence: for <user>, who <need>, this is a <kind of thing> that <key benefit>. Unlike <the closest alternative>, it <what's different>.
+Global mode walks the branches one at a time, in roadmap order. One round asks every leaf question of one branch.
 
-Per-phase mode writes one paragraph: what this phase delivers, and for whom.
+Loop on a branch until its leaves are exhausted — a fresh look at the branch finds no open question. Then move to the next branch.
 
-If a sentence will not fill in cleanly, the tree is not actually settled yet. Go back to Step 2.
+Per-phase mode asks every node in its tree in one round, and settles everything there. Ask a follow-up round only for questions the answers opened.
 
-Gate: every claim traces to a settled decision, and nothing else does.
-
-Gate: show it to the user. Get their approval.
-
-Write it to disk now, before Step 4.
-
-Global mode writes concept, north star, and target users into `prd.md`. Set its status to `draft`.
-
-Per-phase mode writes Scope to `spec/<phase>/user-stories.md`. Set its status to `draft`.
-
-A crash after this point does not lose the shape.
-
-Gate: the shape's section exists on disk, and matches what was approved.
-
-## Step 4 — Grill the features
-
-Map the interview tree for everything the shape left open:
-
-- Global mode: user stories, functional requirements, non-functional requirements, assumptions and constraints, roadmap, when it is done.
-- Per-phase mode: this phase's user stories, in full.
-
-Ask this frontier the same way — one round, split felt versus plumbing, looped until it's empty.
-
-Per-phase mode folds in one question per backlog item:
+Per-phase mode asks each backlog item one question:
 
 - bring it into this phase
 - propose it as a new roadmap phase
 - leave it for later
 
-Search for any fact you would otherwise ask the user. Never ask for a fact you can verify.
+Before closing, name 2 to 6 decisions the interview never reached, that the draft still assumes. Route each as felt (ask now) or plumbing (record it).
 
-Keep searching as new branches appear.
+Then play the settled tree back to the user in plain words. Ask one question: does this match what you mean?
 
-Gate: recompute the frontier — it returns zero items. Every section above has one settled decision behind it.
+Gate: every node in the tree file is settled, and the user said yes to the shared understanding.
 
-Name 2 to 6 decisions the interview never reached, that the draft still assumes. Route each as felt (ask now) or plumbing (record it).
+## Step 6 — Write
 
-The user says yes to the shared understanding.
-
-## Step 5 — Write
-
-Write the rest of `prd.md` from the settled tree, following `../../skills/explore/schemas/prd.md`. Concept, north star, and target users are already there from Step 3.
-
-Record positive facts only. A negating word stating a capability — "never fails," "nothing to install" — is not an exclusion.
-
-Per-phase mode appends the stories to `spec/<phase>/user-stories.md`, following `../../skills/explore/schemas/user-stories.md`. The Scope section is already there from Step 3.
-
-A feature-phase item approved in Step 4 gets appended to `prd.md`'s Roadmap section, as a new phase.
+Global mode writes the rest of `prd.md` from the settled tree, following `../../templates/prd.md`. The trunk is already there from Step 3.
 
 Every roadmap line names its exact `spec/<phase-id>` path. Phase IDs use lowercase kebab-case.
 
-Gate: global mode only — all nine PRD sections exist. Each phase has one exact ID and directory.
+Per-phase mode writes `spec/<phase>/user-stories.md`, following `../../templates/user-stories.md`, with status `draft`. A feature-phase item approved in Step 5 gets appended to `prd.md`'s Roadmap, as a new phase.
 
-Gate: per-phase mode only — Scope and Stories are present. Every settled story appears once.
+Gate:
 
-Gate: show the doc to the user. Get their approval.
+- global mode only: all ten PRD sections exist, and each phase has one exact ID and directory
+- per-phase mode only: Scope, Track, Stories, and `Not in this phase` are present, and every settled story appears once
+- every settled node in the tree file appears in the doc
+- the user approved the doc
 
-## Step 6 — Review and close
+## Step 7 — Review and close
 
-Create a review-only checklist from the approved decisions. Spawn a blind agent at the deliberate tier.
+Create a review-only checklist from the approved decisions. Check the finished document against it yourself.
 
-Use flagship when the document changes security, migration, concurrency, core data, public APIs, or three-system work.
+Global mode and a deep-track phase spawn a blind agent for this check instead, at the deliberate tier. Use flagship when the document changes security, money, existing user data, concurrency, or a public API.
 
-Show it the approved decision checklist and the finished document. It checks:
+The check covers:
 
-- Every branch of the design tree appears in the doc.
+- Every settled node of the interview tree appears in the doc.
 - Every user story names an actor and an outcome, not a general capability.
 - Global mode only: every section is present, grounded in a settled decision.
+- Global mode only: every product principle is something a reviewer could check on a screen.
 - Global mode only: every "When is done" criterion is checkable, and names a real motivation.
 - Per-phase mode only: an approved feature-phase item appears once in `prd.md`'s Roadmap.
-- No sentence in the doc excludes or forbids something. "Never fails" and "nothing to install" state a fact, not an exclusion.
+- Every limit in the doc was stated by the user or proven by research, and names its scope.
 
-Fix each finding once. Fail returns to Step 3 when a finding remains.
+Fix each finding once. A finding that needs a user decision returns to its node in Step 5. Any other finding returns to Step 6.
 
 On pass, set the document status to `approved`.
 
 Per-phase mode closes every folded-in backlog item. Rewrite each item instead of deleting it.
 
-Commit the approved documents. Configure a remote only after the user approves its exact URL.
+Commit the approved documents. Delete the interview tree file. Configure a remote only after the user approves its exact URL.
 
 Gate: the status is `approved`. The working tree is clean. The remote matches the user's choice.
 
-## Gate
-
-Build only from the steps above.
+## Hand-off
 
 Global pass moves to `autobuild:autobuild` — call the Skill tool with that id.
 
-Per-phase pass moves to `autobuild:spec` — call the Skill tool with that id. Fail returns to Step 3 with the findings.
+Per-phase pass moves to `autobuild:spec` — call the Skill tool with that id. A quick-track phase moves to `autobuild:implement` instead.

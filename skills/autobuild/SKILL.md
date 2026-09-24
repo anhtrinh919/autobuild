@@ -5,17 +5,11 @@ description: Finds the open build phase and loads the next skill. Trigger when u
 
 # Autobuild
 
-- Step: one unit of work.
-- Gate: the check at the end of a step.
-- Pass a gate → move to the next step.
-- Fail a gate → redo the step, using the gate's findings.
-- Fail the same gate twice → stop, ask the user.
+Reads the branch, local Git config, committed documents, `backlog.md`, and `spec/`. Writes nothing itself.
 
-Resolve every `../../` path from this `SKILL.md`, against `${CLAUDE_PLUGIN_ROOT}`.
+Read `../../stack.md` first. Resolve `../../` paths against `${CLAUDE_PLUGIN_ROOT}`.
 
-Read `../../ladder.md` first — it shows where this skill sits in the whole stack.
-
-Read the project's `writing-rule.md` next — scaffold it from `../../writing-rule.md` if missing. It sets the prose style for every doc this skill writes.
+## Rules
 
 Wiring only. Every skill it hands off to owns its own steps and gates.
 
@@ -29,31 +23,19 @@ Check these project states in order. Stop at the first match.
 
 A local `autobuild.polish-action` Git config value, or a working or committed `polish-plan.md`, marks an interrupted Polish run. Name `autobuild:polish`.
 
-A committed `state.json` plus a committed statusless or `migrating` PRD marks an earlier Autobuild project when the state shape matches.
+A committed `state.json`, `.build-state.json`, or `specs/` directory, or a `migrating` PRD, marks an older project. Name `autobuild:migrate`. It picks its own mode.
 
-That state shape has `prd`, `changelog`, `backlog`, and `phases` keys. Name `autobuild:migrate` in upgrade mode.
-
-A committed state whose routing mode is `legacy-snapshot` and an approved PRD marks a compatibility project.
-
-A legacy signature plus no PRD marks an old-stack project.
-
-A `migrating` PRD without compatible `state.json` also marks an old-stack project.
-
-Legacy signatures are `.build-state.json` and `specs/`.
-
-An old-stack project names `autobuild:migrate`.
-
-No `prd.md`, and no old-stack signature, marks a fresh idea. Name `autobuild:explore` in global mode.
+No `prd.md` marks a fresh idea. Name `autobuild:explore` in global mode.
 
 A committed PRD whose status is missing or not `approved` names `autobuild:explore` in global mode.
 
-Polish, earlier Autobuild, old-stack, fresh, and draft projects skip Steps 2 and 3.
+Polish, older, fresh, and draft projects skip Steps 2 and 3.
 
-Gate: exactly one state is chosen: polish, earlier Autobuild, old-stack, fresh, draft, compatibility, or current.
+Gate: exactly one state is chosen: polish, older, fresh, draft, or current.
 
 ## Step 2 — Find the open phase
 
-Run this step only for a current or compatibility project.
+Run this step only for a current project.
 
 Read `prd.md`'s Roadmap. It lists every phase, in build order.
 
@@ -61,21 +43,13 @@ Each roadmap line names one exact `spec/<phase-id>` path. Never derive a phase p
 
 If old roadmap lines lack IDs, propose `phase-<N>-<slug>` IDs. Update them only after user approval.
 
-For a compatibility project, treat every phase before its recorded `through` boundary as closed.
+When the open phase has a plan, read its base branch roadmap with `git show <base>:prd.md`. Otherwise read committed `HEAD:prd.md`.
 
-When `phase` is null, scan only phases after `through` with current routing.
+A phase closes when its roadmap line has status `shipped`.
 
-Otherwise test the recorded phase against the working `changelog.md`.
+A roadmap line with no status closes only when the matching changelog has the exact heading `## <phase-id>`.
 
-An absent exact heading makes that phase open and skips the remaining scan. A present heading limits the scan to later phases.
-
-For current routing, read a plan's base branch changelog with `git show <base>:changelog.md`.
-
-For current routing without a plan, read committed `HEAD:changelog.md`.
-
-A phase closes only when that changelog has the exact heading `## <phase-id>`.
-
-Walk the eligible roadmap phases in order. The first phase without that exact heading is open.
+Walk the roadmap phases in order. The first phase not closed is open.
 
 No `spec/<phase>/` directory for the open phase names `autobuild:explore` in per-phase mode.
 
@@ -83,31 +57,26 @@ Gate: exactly one phase is named open, or every phase in the roadmap is closed.
 
 ## Step 3 — Route inside the open phase
 
-Run this step only when the current or compatibility project has an open phase directory.
+Run this step only when the current project has an open phase directory.
 
-Check the open phase's directory in this order: `user-stories.md`, the three spec docs, then `plan.md`.
-
-When the open phase matches the compatibility snapshot, treat each recorded and still-present document as complete.
-
-Apply the lifecycle-status rules to every other document. Later phases use lifecycle statuses for every document.
+Check the open phase's directory in this order: `user-stories.md`, `contract.md`, then `plan.md`.
 
 The first incomplete document names the next skill:
 
 - committed `user-stories.md` missing or not `approved` → `autobuild:explore`, per-phase mode
-- a spec document missing, or committed `features.md` not `approved` → `autobuild:spec`
+- a quick-track phase skips the spec documents
+- committed `contract.md` missing or not `approved` → `autobuild:spec`. A statusless contract counts as `approved` when committed `features.md` is `approved`
 - `plan.md` missing → `autobuild:implement`
 - committed `plan.md` status missing or not `verified` → `autobuild:implement`
 - committed `plan.md` status is `verified` → `autobuild:wrap`
 
 Gate: exactly one skill is named, matching the first gap found.
 
-## Step 4 — Hand off
+## Hand-off
 
 An interrupted Polish run routes to `autobuild:polish`.
 
-An earlier Autobuild project routes to `autobuild:migrate` in upgrade mode.
-
-An old-stack project routes to `autobuild:migrate`.
+An older project routes to `autobuild:migrate`.
 
 A fresh project routes to `autobuild:explore` in global mode.
 

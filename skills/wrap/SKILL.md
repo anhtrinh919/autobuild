@@ -1,47 +1,35 @@
 ---
 name: wrap
-description: Verifies, audits, checks, and finishes a phase. Trigger when users ask to review, test, merge, finish, or ship a phase.
+description: Audits a built phase, shows it to the user, refreshes the living docs, and finishes the branch. Trigger when users ask to review, demo, merge, finish, or ship a phase.
 ---
 
 # Wrap
 
-Per phase, for verification, audit, runtime checks, and finish. Reads the phase diff, contract, stories, and `prd.md`.
+Per phase only. Reads the phase diff, contract, and plan. Writes `changelog.md`, `backlog.md`, `prd.md`, `product.md`, and this phase's demo screenshots.
 
-Writes to `changelog.md` and `backlog.md` at the project root — shared across every phase.
+Read `../../stack.md` first. Resolve `../../` paths against `${CLAUDE_PLUGIN_ROOT}`.
 
-- Step: one unit of work.
-- Gate: the check at the end of a step.
-- Pass a gate → move to the next step.
-- Fail a gate → redo the step, using the gate's findings.
-- Fail the same gate twice → stop, ask the user.
+## Rules
 
-Resolve every `../../` path from this `SKILL.md`, against `${CLAUDE_PLUGIN_ROOT}`.
+Keeps every living doc in `../../stack.md`'s Docs section current. It never edits a snapshot.
 
-Read `../../ladder.md` first — it shows where this skill sits in the whole stack.
+Implement already ran the full suite and the product judge. Wrap reruns neither.
 
-Read the project's `writing-rule.md` next — scaffold it from `../../writing-rule.md` if missing. It sets the prose style for every doc this skill writes.
-
-When a plan lacks its base, inspect committed `state.json` for a `legacy-snapshot` routing object.
-
-Use its base only when its phase matches this phase, `present` lists `plan.md`, and the working plan exists.
+## Resume
 
 Compare the exact phase heading in current `HEAD` and the resolved base branch.
 
-If current `HEAD` has it and the base lacks it, resume at Step 7. Skip Steps 1 through 6.
+If current `HEAD` has it and the base lacks it, resume at Step 5. Skip Steps 1 through 4.
 
-If the working tree has an uncommitted heading, resume at the first incomplete step from Step 4.
+If the working tree has an uncommitted heading, resume at Step 3.
 
-## Step 1 — Verify
+## Step 1 — Audit
 
-Run the full test suite now, fresh — not a memory of an earlier run.
+This audit grades the whole phase diff: code quality, risk, and scope.
 
-Gate: zero tests fail.
+Spawn a blind agent at the deliberate tier. Point it at the phase's full diff, the plan, and the contract when one exists.
 
-## Step 2 — Audit
-
-This audit grades code quality and risk. Implement already checked the contract, line by line.
-
-Spawn a blind agent at the deliberate tier. Point it at the phase's full diff.
+It also flags anything in the diff that the plan never asked for, and any contract line with no code.
 
 Use flagship for security, migration, concurrency, core data, public APIs, or three-system changes.
 
@@ -51,59 +39,47 @@ A felt MEDIUM or LOW finding is never auto-backlogged — one the user would not
 
 Gate: zero HIGH findings remain unresolved.
 
-## Step 3 — Check the running surface
+## Step 2 — Show the user
 
-Skip this step if the phase shipped no running surface.
+Skip this step if the phase shipped nothing a user runs.
 
-Derive deterministic checks from this phase's stories. Use one scripted hit per new endpoint or screen.
+Walk every story through the phase branch's running product with `/browse`. Screenshot each step the actor takes.
 
-Use curl for endpoints. Drive every screen through `/browse`.
+Save the screenshots to `spec/<phase>/demo/`, named `<story>-<step>.png`.
 
-Spawn a `dogfood` agent at the deliberate tier for a phase that shipped screens. It walks the running app through `/browse`, blind to the repo, and reports what it walked, what broke, and what it never reached.
+Show them to the user in story order, one line per step. Ask one question: is this what you wanted?
 
-Show every story the walk never reached to the user. Continue only when the user accepts that coverage gap.
+Each change the user asks for is a felt finding. Fix it now with Implement's test-first method, then show that story again.
 
-Read running output: status codes, logs, rendered output, screenshots, and the walk's own report.
+A change too big for this phase goes to `backlog.md` as a feature-phase item, with the user's OK.
 
-A story that calls the product's agent needs one live call. Seed mock data for its other states.
+Gate: the user confirmed every story, or moved its change to `backlog.md`.
 
-Call the real agent once, to confirm the call itself works — not to confirm every state.
+## Step 3 — Refresh the living docs
 
-Fix every break on a user story's path now. Ask before logging an unrelated rough edge to `backlog.md`.
+Rewrite each living doc to match what shipped. Do this directly, with no review loop.
 
-A felt rough edge is never silently backlogged. The user picks fix-now or backlog.
-
-Gate: every checkable story passed. The user accepted every story the walk never reached.
-
-## Step 4 — Docs
-
-Prepend one phase entry to `changelog.md`, following `../../skills/wrap/schemas/changelog.md`.
+Prepend one phase entry to `changelog.md`, following `../../templates/changelog.md`.
 
 Use the exact phase ID as its heading: `## <phase-id>`.
 
-Append approved Audit or runtime items to `backlog.md`, following `../../skills/wrap/schemas/backlog.md`.
+Append approved Audit or runtime items to `backlog.md`, following `../../templates/backlog.md`.
 
-`backlog.md` may not exist yet. Scaffold it from `../../skills/wrap/schemas/backlog.md` before the first item lands.
+`backlog.md` may not exist yet. Scaffold it from `../../templates/backlog.md` before the first item lands.
 
-Record positive facts only. A negating word stating a capability — "never fails," "nothing to install" — is not an exclusion.
+- `prd.md` — set this phase's roadmap status to `shipped`. Correct any settled fact the phase proved wrong. A change to the Concept, North star, or Product principles needs the user's approval.
+- `product.md` — rewrite each section this phase changed, following `../../templates/product.md`. Scaffold it when missing.
+- `README.md`, anything under `docs/`, and other shipped docs — fix what no longer matches.
 
-Gate: the exact phase heading exists. Every approved item appears once.
+Gate: the exact phase heading exists. Every approved item appears once. Every living doc matches what the diff shipped. This phase's roadmap status is `shipped`.
 
-## Step 5 — Sweep
+## Step 4 — Close
 
-Read every doc this phase's diff could make stale: `README.md`, anything under `docs/`, and other shipped docs.
-
-Fix what no longer matches what shipped. Do this directly, with no review loop.
-
-Gate: every doc read matches what the diff shipped.
-
-## Step 6 — Close
-
-Commit the changelog, backlog, and documentation updates on the phase branch.
+Commit the living-doc updates on the phase branch.
 
 Gate: the closure commit exists. The working tree is clean.
 
-## Step 7 — Finish
+## Step 5 — Finish
 
 Present four options, and only these four:
 
@@ -114,15 +90,16 @@ Present four options, and only these four:
 
 Discard needs a typed "discard" back before it runs.
 
-Follow `../../docs/git-workflow.md` for the branch's fate, matching the choice above.
+Follow `../../stack.md`'s Git section for the branch's fate, matching the choice above.
 
-Gate: the selected action completed. A pull-request choice returned its URL.
+Gate:
+- the selected action completed
+- a pull-request choice returned its URL
+- if merged, the base branch's tests pass — run fresh, not assumed
 
-Gate: if merged, the base branch's tests pass — run fresh, not assumed.
+## Hand-off
 
-## Gate
-
-Every step above passed. Verify and runtime checks already caught what needed catching.
+Every step above passed.
 
 After a merge, check the Roadmap. Move to `autobuild:explore` for the next phase — call the Skill tool with that id — or end the roadmap.
 

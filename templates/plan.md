@@ -2,6 +2,8 @@
 
 20 words a sentence. 2 sentences a line. An agent reads this — keep it exact, not descriptive.
 
+A snapshot doc. Date it. It is never revised after its phase ships.
+
 This phase's plan only. A decision here does not apply to any other phase.
 
 ## Status
@@ -9,6 +11,8 @@ This phase's plan only. A decision here does not apply to any other phase.
 `building` while any build or review work remains. `verified` only after the final review passes.
 
 Base branch: `<exact branch name>`
+
+Acceptance tests: `<tool>` — `<path>`
 
 ## Approach
 
@@ -27,9 +31,8 @@ One block per task, numbered, small enough to finish and commit on its own:
 - `<N>. <task name>`
   - Files: <exact paths this task touches>
   - Tier: `standard`, `deliberate`, `flagship`, or `exceptional`
-  - Test: the failing test's real code, in full
+  - Test: <the behaviour the failing test proves, with its input and expected result>
   - Run: `<the exact command>` — expected: `<the exact failure message>`
-  - Then: the minimal code that makes it pass, in full
   - Commit: `<the exact commit message>`
 
-No "TBD", "similar to Task N", or "add appropriate handling." Every task carries its own full content.
+No "TBD", "similar to Task N", or "add appropriate handling." Every task carries its own facts. The writer writes the code.

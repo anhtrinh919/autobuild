@@ -5,17 +5,11 @@ description: Drains backlog items batch by batch, each on its own approved plan.
 
 # Polish
 
-- Step: one unit of work.
-- Gate: the check at the end of a step.
-- Pass a gate → move to the next step.
-- Fail a gate → redo the step, using the gate's findings.
-- Fail the same gate twice → stop, ask the user.
+Reads `backlog.md`; writes and reads `polish-plan.md`, batch diffs, and `changelog.md`.
 
-Resolve every `../../` path from this `SKILL.md`, against `${CLAUDE_PLUGIN_ROOT}`.
+Read `../../stack.md` first. Resolve `../../` paths against `${CLAUDE_PLUGIN_ROOT}`.
 
-Read `../../ladder.md` first — it shows where this skill sits in the whole stack.
-
-Read the project's `writing-rule.md` next — scaffold it from `../../writing-rule.md` if missing. It sets the prose style for every doc this skill writes.
+## Rules
 
 Runs only when the user invokes it or Autobuild finds an interrupted polish run.
 
@@ -28,6 +22,8 @@ Runs only when the user invokes it or Autobuild finds an interrupted polish run.
 - one block per batch: `Batch <N>`, `Status: pending`, `approved`, or `drained`, its selected items, and its approved plan
 
 `backlog.md` keeps one sentence and one bullet an item. This run's detail lives in `polish-plan.md`.
+
+## Resume
 
 On direct invocation without recovery state, start Step 1.
 
@@ -47,13 +43,11 @@ No recovery state on a non-polish branch is a fresh run and starts Step 1.
 
 The user hands over items in whatever form they have them — pasted, an exported file, a `.md`, a URL. Read whatever's given.
 
-`backlog.md` may not exist yet. Scaffold it from `../../skills/wrap/schemas/backlog.md` before logging the intake.
+`backlog.md` may not exist yet. Scaffold it from `../../templates/backlog.md` before logging the intake.
 
 Before classifying an item, create `polish-plan.md`. Record `Status: intake`, the current base, and every submitted item unchanged.
 
-Log each item as one sentence and one bullet in `backlog.md`, following `../../skills/wrap/schemas/backlog.md`.
-
-Record positive facts only. A negating word stating a capability — "never fails," "nothing to install" — is not an exclusion.
+Log each item as one sentence and one bullet in `backlog.md`, following `../../templates/backlog.md`.
 
 Gate: `polish-plan.md` preserves every submitted item. Each appears in `backlog.md` once, as one sentence in the right category.
 
@@ -73,8 +67,6 @@ Say in one line why each batch groups the way it does, and which batch runs firs
 
 Ask the user to confirm the items and the split. Change no branch, code, or document before that answer.
 
-Gate: the user confirmed every item and its batch.
-
 Choose a free `polish-<YYYYMMDD-HHMMSS>` name. Use Vietnam time.
 
 If that name exists, append `-2`, then increase the suffix until the name is free.
@@ -83,7 +75,11 @@ Set `polish-plan.md` to `Status: planning` while still on its recorded base. Rec
 
 Create or switch to the recorded branch from the recorded base. One branch carries every batch in this run.
 
-Gate: the branch and `polish-plan.md` exist. Every confirmed item sits in exactly one pending batch.
+Gate:
+
+- the user confirmed every item and its batch.
+- the branch and `polish-plan.md` exist.
+- every confirmed item sits in exactly one pending batch.
 
 ## Step 4 — Plan one batch
 
@@ -97,15 +93,15 @@ Classify the fix as root-cause, symptom-patch, or heuristic. Name the exact file
 
 Check for interaction: does one item's fix change behavior another item's fix depends on. Order the batch to avoid it.
 
-Gate: every item has one checkable root cause, classification, file, fix, and test.
-
 Exit plan mode. This is the batch's approval gate.
-
-Gate: the user approved every root cause and proposed fix, before any file changed.
 
 Set `polish-plan.md` to `Status: draining`. Set this batch to `Status: approved` and record its approved plan. Commit that change with an `Autobuild-Base` trailer.
 
-Gate: the committed batch block matches the approved plan and records the base.
+Gate:
+
+- every item has one checkable root cause, classification, file, fix, and test.
+- the user approved every root cause and proposed fix, before any file changed.
+- the committed batch block matches the approved plan and records the base.
 
 ## Step 5 — Drain that batch
 
@@ -125,9 +121,9 @@ Run the full test suite once, fresh, after the whole batch — not per item.
 
 Close each drained item in `backlog.md`, rewritten to its closed form. Leave a not-done item open.
 
-The first drained batch prepends one changelog entry, following `../../skills/wrap/schemas/changelog.md`. Use the exact branch name as its heading. Each later batch adds its lines to that same entry.
+The first drained batch prepends one changelog entry, following `../../templates/changelog.md`. Use the exact branch name as its heading. Each later batch adds its lines to that same entry.
 
-Record positive facts only. A negating word stating a capability — "never fails," "nothing to install" — is not an exclusion.
+Rewrite `product.md` and `prd.md` wherever this batch changed what they state, following `../../templates/product.md`.
 
 Report a table, one row per item in the batch: the original issue, what was done, and the outcome. Flag a not-done item clearly, in its own row, never folded into a done row.
 
@@ -167,8 +163,6 @@ After verification, unset all three local Git config values.
 
 Gate: the requested branch action completed, the current branch is the recorded base, and no local polish config remains.
 
-## Gate
-
-Build only from the steps above.
+## Hand-off
 
 Gate on the selected branch action. Pass ends this run. Fail returns to Step 5.

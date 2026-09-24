@@ -5,30 +5,28 @@ description: Turns a phase contract into tested code through an approved plan. T
 
 # Implement
 
-Per phase only. Reads `spec/<phase>/contract.md`, `spec/<phase>/features.md`, `spec/<phase>/design-brief.md`, `spec/<phase>/design/`, `spec/<phase>/design-review.md`, `spec/<phase>/user-stories.md`, `spec/<phase>/research.md`, and `prd.md` — never another phase's `spec/`.
+Per phase only. Reads `spec/<phase>/contract.md`, `spec/<phase>/design.md`, `spec/<phase>/design/`, `spec/<phase>/user-stories.md`, `spec/<phase>/research.md`, `prd.md`, and `product.md` — never another phase's `spec/`. Writes `spec/<phase>/plan.md`, the acceptance tests, and the phase's code, on the phase branch.
 
-`design-brief.md` is a snapshot of the day it was written. The contract carries the phase forward, and the contract wins wherever the two disagree.
+Read `../../stack.md` first. Resolve `../../` paths against `${CLAUDE_PLUGIN_ROOT}`.
 
-`spec/<phase>/design/` is what a screen has to look like. The winners in `design-review.md` name each screen that differs from it on purpose.
+## Rules
 
-- Step: one unit of work.
-- Gate: the check at the end of a step.
-- Pass a gate → move to the next step.
-- Fail a gate → redo the step, using the gate's findings.
-- Grade a design decision behind a task's test first — door and reach, see Step 2.
-- Fail the same gate twice with no decision ever graded → grade it now, the same way, as a backstop. Act on the grade.
-- Stop and ask the user only for:
-  - an irreversible or destructive action
-  - a security-sensitive action
-  - an action outside this workspace — merge, push, publish
-  - a plan too broken to guess a path through
-  - any decision Step 2's grading marks as reach
+`design.md`'s Source names what each screen has to look like. Its Decisions name each screen that differs from the design on purpose.
 
-Resolve every `../../` path from this `SKILL.md`, against `${CLAUDE_PLUGIN_ROOT}`.
+Grade a design decision behind a task's test first — door and reach, see Step 2.
 
-Read `../../ladder.md` first — it shows where this skill sits in the whole stack.
+Fail the same gate twice with no decision ever graded → grade it now, the same way, as a backstop. Act on the grade.
 
-Read the project's `writing-rule.md` next — scaffold it from `../../writing-rule.md` if missing. It sets the prose style for every doc this skill writes.
+Stop and ask the user only for:
+
+- an irreversible or destructive action
+- a security-sensitive action
+- an action outside this workspace — merge, push, publish
+- a plan too broken to guess a path through
+- any decision Step 2's grading marks as reach
+- the direction check after the first batch, in Step 2
+
+## Resume
 
 If committed `plan.md` has no status, set it to `building`.
 
@@ -44,37 +42,47 @@ Enter plan mode.
 
 Map the files first: which files get created, which get modified, and the one job each file does.
 
+Name the end-to-end test tool and the acceptance test path. Reuse the project's own tool when one exists.
+
 Break the work into tasks. Each task is one small file group, and can be finished and committed on its own.
 
-Write every task in full — the exact paths, the real test code, the exact command, and its expected result. Never write "add error handling," "similar to Task N," or "TBD."
+Order the tasks so the first batch builds the thinnest end-to-end path through the phase's main story. Later tasks fill it in.
 
-Check the plan against the contract, line by line: does every endpoint, rule, and field map to a task? Check every task's names and types against every other task: the same field or function must read the same everywhere.
+Write every task in full — the exact paths, the behaviour its test proves, the exact command, and its expected result. The writer writes the code. Never write "add error handling," "similar to Task N," or "TBD."
 
-Gate: read the plan — zero hits for "TBD", "TODO", "similar to", or "add appropriate".
+Check the plan against the contract, line by line: does every interface, rule, and field map to a task? A quick-track phase has no contract — check each acceptance criterion in `user-stories.md` instead. Check every task's names and types against every other task: the same field or function must read the same everywhere.
 
-Gate: every contract line maps to a task, checked one by one.
+Assign each task a tier. Use standard unless its scope meets a higher tier's rule in `../../stack.md`.
 
-Assign each task a tier. Use standard unless its scope meets a higher tier's rule in `../../ladder.md`.
+Check the first two gate items below before you exit.
 
 Exit plan mode. This is the plan's approval gate.
 
-Gate: the user approved the complete plan, before any file was written or a branch created.
-
 Record the current branch as the plan's base branch.
 
-Follow `../../docs/git-workflow.md` to create this phase's branch before Step 2.
+Follow `../../stack.md`'s Git section to create this phase's branch before Step 2.
 
-Once approved, write `spec/<phase>/plan.md`, following `../../skills/implement/schemas/plan.md`.
+Once approved, write `spec/<phase>/plan.md`, following `../../templates/plan.md`. Set its status to `building`.
 
-Set its status to `building`.
-
-Record positive facts only. A negating word stating a capability — "never fails," "nothing to install" — is not an exclusion.
-
-Gate: `spec/<phase>/plan.md` exists, and matches the approved plan.
+Gate:
+- the plan has zero hits for "TBD", "TODO", "similar to", or "add appropriate"
+- every contract line maps to a task, checked one by one
+- the user approved the complete plan, before any file was written or a branch created
+- `spec/<phase>/plan.md` exists, and matches the approved plan
 
 ## Step 2 — Build
 
 Resuming after a break? Check `plan.md`'s tasks against the branch's git log — a task whose commit message is already there is done.
+
+Before the first task, write the acceptance tests. Skip this when the branch log already has the `acceptance tests` commit.
+
+Spawn a fresh writer subagent at the standard tier, with no conversation history. Give it only `user-stories.md`, the plan's test tool and path, and — when they exist — `design.md`'s Decisions and the contract's interfaces.
+
+It writes one end-to-end test per acceptance criterion, driven the way a user drives the product — a browser for screens, a real call for interfaces. It never reads the plan's tasks.
+
+Run them. Every test fails for the missing behaviour, not for a broken setup. Commit them as `acceptance tests`.
+
+These files are read-only for every later writer. A change to one is a change to a story — ask the user first.
 
 Start from the first task that is not done. A plan without Tier uses standard.
 
@@ -112,7 +120,7 @@ Tell it to mutate the code once. It tries a wrong constant, branch, return, or s
 
 The writer reports changed paths, mutation result, focused test output, exit codes, and new dependencies.
 
-Reject work outside the task's Files. Check every reported result before accepting the task.
+Reject work outside the task's Files, and any change to an acceptance test. Check every reported result before accepting the task.
 
 Run writers in parallel only when their Files do not overlap. Keep risky tasks in separate review cycles.
 
@@ -124,11 +132,7 @@ Step 2 never reruns the full suite. That cost belongs to Step 3, once, at the en
 
 A task's test is hollow when expected values come from the code under test. Compute them independently.
 
-A test that only detects an intentional constant change is hollow. Test the behavior that constant drives.
-
-Gate: every mutation made at least one test fail. An uncaught mutation leaves the behavior unprotected or the test hollow.
-
-Gate: any new dependency is a real, maintained package.
+A test that only detects an intentional constant change is hollow. Test the behavior that constant drives. An uncaught mutation leaves the behavior unprotected or the test hollow.
 
 Spawn a blind agent to review each batch before committing it. Use deliberate for standard or deliberate batches.
 
@@ -140,9 +144,18 @@ The reviewer never re-runs the suite themselves. If something looks wrong, it ru
 
 The reviewer trusts nothing you report. It reads the diff against the task's own text, and flags anything missing or extra.
 
-Gate: no open review findings remain, on any task. Every diff matches only the task it belongs to.
-
 The parent session directs repairs, reruns focused tests, and commits the reviewed batch. Only that commit marks its tasks done.
+
+After the first batch commits, show the user that path running — screenshots of each screen, or the command and its output. Ask one question: is this the right direction?
+
+A redirect returns to Step 1 for every task it touches. Record the answer in `plan.md`.
+
+Gate:
+- every acceptance criterion has one failing acceptance test, committed
+- every mutation made at least one test fail
+- any new dependency is a real, maintained package
+- no open review findings remain on any task, and every diff matches only the task it belongs to
+- the user confirmed the direction, or the plan was revised to match their redirect
 
 ## Step 3 — Verify
 
@@ -150,60 +163,67 @@ Run the full test suite now, fresh — not a memory of an earlier run. Read the 
 
 A test failing here is a regression, not a RED step — trace it to its root cause. Check every layer the bad value passes through, not just where it surfaced.
 
-Check the contract line by line against the code:
+Check the contract line by line against the code. A quick-track phase checks each acceptance criterion instead:
 
-- every endpoint is reachable
+- every interface is reachable
 - every business rule has a passing test
 - every edge case from the contract is covered
 
-Gate: zero tests fail. Every contract line is accounted for in the code.
+Gate: zero tests fail, acceptance tests included. Every contract line is accounted for in the code.
 
-## Step 4 — Visual check
+## Step 4 — Product judge
 
-Skip this step when the phase shipped no screen, or when `spec/<phase>/design/` holds no design file.
+Tests prove the code matches the plan. This step checks the product matches what the user wanted.
 
-Start the product. Drive every screen this phase touched through `/browse`.
+Skip this step when the phase shipped nothing a user runs.
 
-Screenshot each screen, in every state the design draws.
+Start the product. Seed data shaped like real use: empty, typical, and heavy — long text, many rows.
 
-Spawn a blind agent at the deliberate tier. Give it the screenshots, the files in `spec/<phase>/design/`, and `spec/<phase>/design-review.md`.
+A story that calls the product's own agent gets one live call. Seed mock data for its other states.
 
-It compares each screen to its own design file. It reports every visible difference: layout, spacing, colour, type, copy, state, and any element that is absent.
+Spawn a `dogfood` agent at the deliberate tier, with no conversation history. Give it only:
 
-A difference the brief won in `design-review.md` is correct as built. The agent reports the rest.
+- `prd.md`'s Concept, North star, Target users, and Product principles
+- this phase's stories and its `Not in this phase` list, in the user's words
+- how to open the product, and which seeded data exists
+- the phase's design files and recorded design decisions, when a design exists
 
-Fix every reported difference now. Rerun the focused tests each fix touches.
+Never give it the contract, the plan, the diff, or any test result. It judges the product, not the paperwork.
 
-Gate: every phase screen was screenshotted and compared, state by state.
+It plays each story's actor. It starts from the product's first screen, with no hints, and tries to finish the story.
 
-Gate: zero reported differences remain.
+It walks every screen it reaches at phone width (390px) and desktop width (1440px), with each seeded data set.
 
-## Step 5 — Review and close
+It judges each screen on three levels, in this order:
 
-Review the phase's full diff against `spec/<phase>/contract.md`. This review checks contract compliance only.
+- Intent — in five seconds, can the actor tell what this screen is and what to do next? Does the walk deliver the story's outcome? Does it honour every product principle?
+- Fidelity — do the hierarchy, primary action, copy, and states match the design? A recorded design decision that differs from the design is correct as built.
+- Polish — spacing, alignment, colour, and type.
 
-Spawn a blind agent. Show it the contract, plan, and phase diff.
+It reports each finding with its level, screen, state, width, screenshot path, and what a real user would say. It also lists every story it could not reach.
 
-Use exceptional when any task uses exceptional. Otherwise use flagship when any task uses flagship.
+Grade each finding:
 
-Otherwise, use deliberate.
+- Blocker — the actor cannot finish a story, or an intent check fails.
+- Felt — the actor finishes, but a user would notice, wait, or feel lost.
+- Polish — only a trained eye notices.
 
-It checks:
+Fix every blocker and felt finding now. A fix that changes what users see, do, or pay is a reach decision — ask the user first.
 
-- Every business rule in the contract has a test that passes.
-- Every endpoint in the contract works end to end.
-- Nothing in the diff is missing from the plan, or added beyond it.
+Fix polish findings in one batch. Ask the user before logging one to `backlog.md` instead.
 
-Fix each finding once. Fail returns to Step 2 when a finding remains.
+Rerun the focused tests each fix touches. Respawn the judge on the screens the fixes touched.
 
-On pass, set the plan status to `verified`. Commit that status change.
+Gate: every story was walked or its gap was shown to the user. Zero blocker or felt findings remain open.
 
-Gate: zero review findings remain. The plan status is `verified`. The working tree is clean.
+## Step 5 — Close
 
-## Gate
+Set the plan status to `verified`. Commit that status change.
 
-Build only from the steps above.
+Wrap's audit reviews the whole diff. This step adds no second review.
+
+Gate: the plan status is `verified`. The working tree is clean.
+
+## Hand-off
 
 Pass moves straight to `autobuild:wrap` — call the Skill tool with that id.
-
-Fail Step 5 twice with no graded decision. Grade it under Step 2 before moving on.

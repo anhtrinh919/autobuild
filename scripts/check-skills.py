@@ -16,7 +16,7 @@ for skill in skills:
     assert f"name: {skill.parent.name}" in text, f"wrong name in {skill}"
     assert "update-state.py" not in text, f"obsolete state script referenced in {skill}"
     assert "${CLAUDE_PLUGIN_ROOT}" in text, f"{skill} does not name the Claude plugin root"
-    if skill.parent.name not in {"autobuild", "migrate", "wrap"}:
+    if skill.parent.name not in {"autobuild", "migrate"}:
         assert "`state.json`" not in text, f"obsolete state routing remains in {skill}"
     for relative in re.findall(r"`(\.\./\.\./[^`]+)`", text):
         assert (skill.parent / relative).resolve().exists(), f"missing {relative} from {skill}"
@@ -35,6 +35,7 @@ for name, phrase in handoffs.items():
     assert phrase in text, f"{name} does not hand off through the Skill tool"
 
 implement_text = (root / "skills/implement/SKILL.md").read_text()
+assert "never reads the plan's tasks" in implement_text, "acceptance tests share an author with the code"
 assert "Enter plan mode." in implement_text, "implement does not enter plan mode"
 assert "Exit plan mode. This is the plan's approval gate." in implement_text, "implement does not gate on plan mode"
 
@@ -43,7 +44,8 @@ for name in ("explore", "spec", "polish"):
     assert "`crawler`" in text, f"{name} does not dispatch crawler for research"
 
 wrap_text = (root / "skills/wrap/SKILL.md").read_text()
-assert "`dogfood`" in wrap_text, "wrap does not spawn dogfood for the running surface"
+assert "`dogfood`" in implement_text, "implement does not spawn dogfood as the product judge"
+assert "Never give it the contract, the plan, the diff" in implement_text, "product judge sees the paperwork"
 assert "`/browse`" in wrap_text, "wrap does not drive screens through /browse"
 assert "`/browse`" in (root / "skills/spec/SKILL.md").read_text(), "spec does not walk trials through /browse"
 
@@ -53,24 +55,22 @@ for route in ("autobuild:migrate", "autobuild:explore", "autobuild:spec", "autob
 
 assert "status is `verified`" in router, "router does not guard unfinished implementation"
 assert "exact heading `## <phase-id>`" in router, "router does not use exact phase closure"
+assert "status `shipped`" in router, "router does not close phases by roadmap status"
+assert "## Docs" in (root / "stack.md").read_text(), "living and snapshot docs are undefined"
 assert "autobuild.polish-action" in router, "router cannot recover an interrupted polish action"
 assert "working or committed `polish-plan.md`" in router, "router cannot recover polish collection"
-assert "earlier Autobuild project" in router, "router cannot detect the previous Autobuild schema"
-assert "compatibility project" in router, "router cannot preserve previous completion routing"
-assert "recorded phase against the working `changelog.md`" in router, "compatibility routing changes old phase closure"
-assert "recorded `through` boundary" in router, "compatibility leaks into later phases"
-assert "recorded and still-present document" in router, "compatibility does not preserve the old snapshot"
 
 migrate = (root / "skills/migrate/SKILL.md").read_text()
 assert "Upgrade mode" in migrate, "migration lacks an in-place Autobuild upgrade"
-assert "legacy-snapshot" in migrate, "upgrade changes previous completion behavior"
+assert "legacy-snapshot" in migrate, "upgrade cannot convert a compatibility project"
+assert "remove `state.json`" in migrate, "upgrade leaves routing state behind"
+assert "`state.json`, `.build-state.json`, or `specs/`" in router, "router cannot send older projects to migrate"
 assert "Never stage a pre-existing diff" in migrate, "upgrade can absorb unrelated work"
 assert "autobuild-migrate-untracked" in migrate, "upgrade cannot verify untracked files"
 assert "current phase is none" in migrate, "upgrade cannot preserve a completed roadmap"
 assert migrate.index("Keep their Git-local record") < migrate.index("commit only the migration") < migrate.index("remove the Git-local hash record"), "upgrade drops its recovery record before commit"
 
 wrap = (root / "skills/wrap/SKILL.md").read_text()
-assert "legacy-snapshot" in wrap, "wrap cannot recover a previous plan's base"
 
 polish = (root / "skills/polish/SKILL.md").read_text()
 assert "Status: intake" in polish, "polish lacks recoverable pre-branch state"
@@ -86,11 +86,11 @@ assert "Return to Step 4 while a pending batch remains" in polish, "polish drain
 assert "changes the root cause or fix returns the item to Step 4" in polish, "polish can drift from the approved diagnosis"
 assert "Before leaving the polish branch, remove `polish-plan.md`" in polish, "polish loses recovery before branch fate"
 
-backlog = (root / "skills/wrap/schemas/backlog.md").read_text()
+backlog = (root / "templates/backlog.md").read_text()
 assert "Open entries: 30 words, 1 sentence, 1 bullet" in backlog, "backlog entries can expand beyond one line"
 assert "## Polish intake" not in backlog and "## Active polish" not in backlog, "backlog still stores polish working state"
 
-ladder = (root / "ladder.md").read_text()
+ladder = (root / "stack.md").read_text()
 assert "## Subagent tiers" in ladder, "dispatch tiers are undocumented"
 assert "parent session keeps its user-selected model" in ladder, "tiers can override the parent model"
 for tier in ("mechanical", "standard", "deliberate", "flagship", "exceptional"):
@@ -98,17 +98,20 @@ for tier in ("mechanical", "standard", "deliberate", "flagship", "exceptional"):
 assert "Sonnet 5" in ladder and "Opus 5" in ladder, "Claude tier mapping is missing"
 assert "Codex" not in ladder, "Codex tier mapping belongs in the Codex source repo"
 
-plan = (root / "skills/implement/schemas/plan.md").read_text()
+plan = (root / "templates/plan.md").read_text()
 assert "Tier: `standard`, `deliberate`, `flagship`, or `exceptional`" in plan, "tasks lack a durable tier"
 
 implement = (root / "skills/implement/SKILL.md").read_text()
 for phrase in ("writer subagent", "A plan without Tier uses standard", "must not commit", "Files do not overlap", "stop before editing when it finds an ungraded decision", "Use exceptional for an exceptional batch"):
     assert phrase in implement, f"implement lacks {phrase}"
 
-research = (root / "skills/spec/schemas/research.md").read_text().splitlines()
-assert research[0].endswith("sentence. 2 sentences a line."), "research schema lacks caps"
-assert research[4].startswith("This phase's research only."), "research schema lacks phase scope"
+research = (root / "templates/research.md").read_text().splitlines()
+assert research[2].endswith("sentence. 2 sentences a line."), "research schema lacks caps"
+assert any(l.startswith("This phase's research only.") for l in research), "research schema lacks phase scope"
 
 assert not (root / "scripts/update-state.py").exists(), "obsolete state script remains"
-assert not (root / "commands/autobuild.md").exists(), "legacy command remains"
+assert not (root / "commands").exists(), "legacy command folder remains"
+assert (root / "templates/writing-rule.md").exists(), "writing-rule scaffold is missing"
+for skill in skills:
+    assert "/schemas/" not in skill.read_text(), f"{skill} points at an old schema folder"
 print("Claude skill checks passed")
