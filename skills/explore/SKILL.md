@@ -13,6 +13,8 @@ Read `../../stack.md` first. Resolve `../../` paths against `${CLAUDE_PLUGIN_ROO
 
 Global mode runs once, for the whole product, and writes `prd.md`. Per-phase mode runs again, before each phase's spec work, and writes `spec/<phase>/user-stories.md`.
 
+Global mode interviews the whole product, never phase by phase. A phase's own stories and details belong to per-phase mode, run later for that phase.
+
 Every round follows these rules:
 
 - Ask only felt decisions. Decide plumbing yourself, and mark its node `settled` in the tree file.
@@ -86,8 +88,8 @@ Write the interview tree to the path from `git rev-parse --git-path autobuild-in
 Global mode maps three levels:
 
 - Trunk — the core: concept, north star, target users, and product principles.
-- Branches — the shape: each major area of the product, the actor it serves, what it holds, its non-goals, its constraints, and where it sits in the roadmap.
-- Leaves — the detail under each branch: its stories and criteria, rules, edge cases, targets, and when it is done.
+- Branches — the shape: each major area of the whole product, the actor it serves, what it holds, its non-goals, and its constraints. A branch is a part of the product, never a phase.
+- Leaves — the product-level detail under each branch: its key stories, rules, edge cases, and targets.
 
 Per-phase mode maps one level: this phase's goal, actors, track, stories, criteria, `Not in this phase` list, and one question per backlog item.
 
@@ -124,15 +126,17 @@ Ask every branch question in one round. A long round is fine — the shape needs
 
 Add every branch the answers reveal to the tree. Ask a follow-up round only for questions the answers opened.
 
-Show the user the full branch list, in roadmap order.
+Show the user the full branch list.
 
 Gate: every branch node is settled, and the user approved the branch list.
 
 ## Step 5 — Leaves
 
-Global mode walks the branches one at a time, in roadmap order. One round asks every leaf question of one branch.
+Global mode walks the branches one at a time. One round asks every leaf question of one branch.
 
 Loop on a branch until its leaves are exhausted — a fresh look at the branch finds no open question. Then move to the next branch.
+
+When every branch is exhausted, global mode slices the whole settled tree into roadmap phases, following `../../templates/prd.md`'s Roadmap rules. Propose the full roadmap in one round, and get the user's approval.
 
 Per-phase mode asks every node in its tree in one round, and settles everything there. Ask a follow-up round only for questions the answers opened.
 
