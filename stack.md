@@ -10,6 +10,8 @@
 - Fail a gate → redo the step, using the gate's findings.
 - Fail the same gate twice → stop, ask the user. Implement's own stop rules replace this line.
 
+The user reviews last. Show the user a finished doc for approval only after every review of it passed. A later fix that changes its meaning goes back to the user.
+
 Resolve every `../../` path from the skill's `SKILL.md`, against `${CLAUDE_PLUGIN_ROOT}`.
 
 Read the project's `writing-rule.md` before writing any doc. Scaffold it from `../../templates/writing-rule.md` when missing.

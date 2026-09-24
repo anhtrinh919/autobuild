@@ -147,7 +147,7 @@ In upgrade mode, show it the original state, migration diff, and resulting route
 
 Fix each finding once. Fail returns to Step 2 when a finding remains.
 
-In legacy mode, set the PRD, user stories, and contract to `approved`. Keep any plan `building`.
+In legacy mode, show the user the migrated PRD, and name what the review fixed. Get their approval, then set the PRD, user stories, and contract to `approved`. Keep any plan `building`.
 
 In upgrade mode, set the PRD to `approved`.
 

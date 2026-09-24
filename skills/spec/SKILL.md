@@ -110,11 +110,7 @@ Check the contract against the user stories and the design:
 
 Set the contract's status to `draft`.
 
-Tell the user, in plain words, what the product will do after this phase. One line per business rule the user would notice. Name no field, interface, or code.
-
-Gate:
-- All six hold. Fix any that do not before moving on.
-- Show that summary to the user. Get their approval.
+Gate: all six hold. Fix any that do not before moving on.
 
 ## Step 5 — Review and close
 
@@ -132,9 +128,11 @@ The check covers:
 
 Fix each finding once. Fail returns to Step 3 when a finding remains.
 
-On pass, set the contract status to `approved`. Commit the phase documents.
+On pass, tell the user, in plain words, what the product will do after this phase. One line per business rule the user would notice. Name no field, interface, or code.
 
-Gate: zero review findings remain. The contract is `approved`. The working tree is clean.
+Get their approval, then set the contract status to `approved`. Commit the phase documents.
+
+Gate: zero review findings remain. The user approved the summary. The contract is `approved`. The working tree is clean.
 
 ## Hand-off
 

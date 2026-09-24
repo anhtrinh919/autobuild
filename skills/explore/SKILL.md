@@ -165,7 +165,6 @@ Gate:
 - global mode only: all ten PRD sections exist, and each phase has one exact ID and directory
 - per-phase mode only: Scope, Track, Stories, and `Not in this phase` are present, and every settled story appears once
 - every settled node in the tree file appears in the doc
-- the user approved the doc
 
 ## Step 7 — Review and close
 
@@ -185,13 +184,13 @@ The check covers:
 
 Fix each finding once. A finding that needs a user decision returns to its node in Step 5. Any other finding returns to Step 6.
 
-On pass, set the document status to `approved`.
+On pass, show the user the finished doc, and name what the review fixed. Get their approval, then set the document status to `approved`.
 
 Per-phase mode closes every folded-in backlog item. Rewrite each item instead of deleting it.
 
 Commit the approved documents. Delete the interview tree file. Configure a remote only after the user approves its exact URL.
 
-Gate: the status is `approved`. The working tree is clean. The remote matches the user's choice.
+Gate: the user approved the reviewed doc. The status is `approved`. The working tree is clean. The remote matches the user's choice.
 
 ## Hand-off
 
