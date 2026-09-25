@@ -23,7 +23,7 @@ Check these project states in order. Stop at the first match.
 
 A local `autobuild.polish-action` Git config value, or a working or committed `polish-plan.md`, marks an interrupted Polish run. Name `autobuild:polish`.
 
-A committed `state.json`, `.build-state.json`, or `specs/` directory, or a `migrating` PRD, marks an older project. Name `autobuild:migrate`. It picks its own mode.
+A committed `state.json` or `.build-state.json`, a committed `specs/` directory with no PRD, or a `migrating` PRD, marks an older project. Name `autobuild:migrate`. It picks its own mode.
 
 No `prd.md` marks a fresh idea. Name `autobuild:explore` in global mode.
 
