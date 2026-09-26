@@ -82,7 +82,11 @@ It writes one end-to-end test per acceptance criterion, driven the way a user dr
 
 Run them. Every test fails for the missing behaviour, not for a broken setup. Commit them as `acceptance tests`.
 
-These files are read-only for every later writer. A change to one is a change to a story — ask the user first.
+These files are read-only for every code writer. A code writer never edits one to make it pass.
+
+A broken acceptance test is plumbing when its fix keeps the story's promise — a wrong selector, setup, wait, or path. Fix it without asking: send a fresh acceptance-test writer the story and the failing output. Record the fix in `plan.md`.
+
+Ask the user only when the fix would change what a story promises. Name the story and the choice in plain words, with your recommendation.
 
 Start from the first task that is not done. A plan without Tier uses standard.
 
