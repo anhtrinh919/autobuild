@@ -122,11 +122,9 @@ The writer reports changed paths, mutation result, focused test output, exit cod
 
 Reject work outside the task's Files, and any change to an acceptance test. Check every reported result before accepting the task.
 
-Run writers in parallel only when their Files do not overlap. Keep risky tasks in separate review cycles.
+Run writers in parallel only when their Files do not overlap.
 
 If writer subagents are unavailable, perform the same bounded task in this session. The parent session keeps every branch and commit action.
-
-Batch two or more small, same-shape accepted tasks into one review cycle. Keep risky tasks in separate cycles.
 
 Step 2 never reruns the full suite. That cost belongs to Step 3, once, at the end.
 
@@ -134,17 +132,15 @@ A task's test is hollow when expected values come from the code under test. Comp
 
 A test that only detects an intentional constant change is hollow. Test the behavior that constant drives. An uncaught mutation leaves the behavior unprotected or the test hollow.
 
-Spawn a blind agent to review each batch before committing it. Use deliberate for standard or deliberate batches.
+No blind review runs per task. Step 3 reviews the whole phase once.
 
-Use flagship for a flagship batch. Use exceptional for an exceptional batch.
+A load-bearing task is the exception — one at the flagship or exceptional tier. It gets its own blind review before any later task builds on it.
 
-Point it at every batch task block and the uncommitted diff by file path.
+Use flagship for a flagship task. Use exceptional for an exceptional task.
 
-The reviewer never re-runs the suite themselves. If something looks wrong, it runs one focused test — never the whole suite.
+Point that reviewer at the task block and the uncommitted diff by file path. It trusts nothing you report, and reads the diff against the task's own text. It flags anything missing or extra, and runs one focused test at most.
 
-The reviewer trusts nothing you report. It reads the diff against the task's own text, and flags anything missing or extra.
-
-The parent session directs repairs, reruns focused tests, and commits the reviewed batch. Only that commit marks its tasks done.
+The parent session directs repairs, reruns focused tests, and commits accepted tasks in batches. Only that commit marks its tasks done.
 
 After the first batch commits, show the user that path running — screenshots of each screen, or the command and its output. Ask one question: is this the right direction?
 
@@ -154,7 +150,7 @@ Gate:
 - every acceptance criterion has one failing acceptance test, committed
 - every mutation made at least one test fail
 - any new dependency is a real, maintained package
-- no open review findings remain on any task, and every diff matches only the task it belongs to
+- no open review findings remain on any load-bearing task, and every diff matches only the task it belongs to
 - the user confirmed the direction, or the plan was revised to match their redirect
 
 ## Step 3 — Verify
@@ -169,7 +165,20 @@ Check the contract line by line against the code. A quick-track phase checks eac
 - every business rule has a passing test
 - every edge case from the contract is covered
 
-Gate: zero tests fail, acceptance tests included. Every contract line is accounted for in the code.
+Spawn one blind agent to review the whole phase diff against its base branch. Use the plan's highest task tier, at deliberate or above.
+
+Give it the plan, and the contract when one exists. It trusts nothing you report. It checks:
+
+- every task's diff matches its own text
+- nothing in the diff was never asked for by the plan
+- no test takes its expected values from the code under test
+- no risk the task's tier names is left open — security, data loss, a race
+
+It runs one focused test at most, never the whole suite.
+
+Fix each finding. Rerun the focused tests each fix touches, then the full suite once more.
+
+Gate: zero tests fail, acceptance tests included. Every contract line is accounted for in the code. Zero review findings remain open.
 
 ## Step 4 — Product judge
 
@@ -220,7 +229,7 @@ Gate: every story was walked or its gap was shown to the user. Zero blocker or f
 
 Set the plan status to `verified`. Commit that status change.
 
-Wrap's audit reviews the whole diff. This step adds no second review.
+Step 3's review covers the whole diff. Wrap adds no second code review.
 
 Gate: the plan status is `verified`. The working tree is clean.
 

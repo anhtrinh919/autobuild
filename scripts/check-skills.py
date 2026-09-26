@@ -64,7 +64,7 @@ migrate = (root / "skills/migrate/SKILL.md").read_text()
 assert "Upgrade mode" in migrate, "migration lacks an in-place Autobuild upgrade"
 assert "legacy-snapshot" in migrate, "upgrade cannot convert a compatibility project"
 assert "remove `state.json`" in migrate, "upgrade leaves routing state behind"
-assert "`state.json`, `.build-state.json`, or `specs/`" in router, "router cannot send older projects to migrate"
+assert "`state.json` or `.build-state.json`, a committed `specs/` directory with no PRD" in router, "router cannot send older projects to migrate"
 assert "Never stage a pre-existing diff" in migrate, "upgrade can absorb unrelated work"
 assert "autobuild-migrate-untracked" in migrate, "upgrade cannot verify untracked files"
 assert "current phase is none" in migrate, "upgrade cannot preserve a completed roadmap"
@@ -102,7 +102,7 @@ plan = (root / "templates/plan.md").read_text()
 assert "Tier: `standard`, `deliberate`, `flagship`, or `exceptional`" in plan, "tasks lack a durable tier"
 
 implement = (root / "skills/implement/SKILL.md").read_text()
-for phrase in ("writer subagent", "A plan without Tier uses standard", "must not commit", "Files do not overlap", "stop before editing when it finds an ungraded decision", "Use exceptional for an exceptional batch"):
+for phrase in ("writer subagent", "A plan without Tier uses standard", "must not commit", "Files do not overlap", "stop before editing when it finds an ungraded decision", "Use exceptional for an exceptional task", "Spawn one blind agent to review the whole phase diff"):
     assert phrase in implement, f"implement lacks {phrase}"
 
 research = (root / "templates/research.md").read_text().splitlines()

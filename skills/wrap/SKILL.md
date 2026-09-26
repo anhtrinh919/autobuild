@@ -25,15 +25,15 @@ If the working tree has an uncommitted heading, resume at Step 3.
 
 ## Step 1 — Audit
 
-This audit grades the whole phase diff: code quality, risk, and scope.
+Implement's verify step already ran the phase's blind code review. This audit is a self-check of scope, not a second review.
 
-Spawn a blind agent at the deliberate tier. Point it at the phase's full diff, the plan, and the contract when one exists.
+Read the phase's full diff against the plan, and the contract when one exists. Flag:
 
-It also flags anything in the diff that the plan never asked for, and any contract line with no code.
+- anything in the diff the plan never asked for
+- any contract line with no code
+- any change made after Implement's review, such as a product-judge fix, that no test covers
 
-Use flagship for security, migration, concurrency, core data, public APIs, or three-system changes.
-
-Fix every HIGH finding now. A MEDIUM or LOW finding, or one outside this phase's stories, needs the user's OK before it goes to `backlog.md`, instead of blocking here.
+Grade each finding HIGH, MEDIUM, or LOW. Fix every HIGH finding now. A MEDIUM or LOW finding, or one outside this phase's stories, needs the user's OK before it goes to `backlog.md`, instead of blocking here.
 
 A felt MEDIUM or LOW finding is never auto-backlogged — one the user would notice, wait on, or feel boxed in by. Surface it; the user picks fix-now or backlog.
 
