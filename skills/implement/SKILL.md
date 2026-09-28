@@ -138,9 +138,14 @@ A test that only detects an intentional constant change is hollow. Test the beha
 
 No blind review runs per task. Step 3 reviews the whole phase once.
 
-A load-bearing task is the exception — one at the flagship or exceptional tier. It gets its own blind review before any later task builds on it.
+A load-bearing task is the exception. It needs both:
 
-Use flagship for a flagship task. Use exceptional for an exceptional task.
+- later tasks build on it
+- it touches security, money, a data migration, or existing user data
+
+It gets its own blind review before any later task builds on it. Every other task waits for Step 3, whatever its tier.
+
+Use the task's tier for that reviewer, at deliberate or above. Use exceptional for an exceptional task.
 
 Point that reviewer at the task block and the uncommitted diff by file path. It trusts nothing you report, and reads the diff against the task's own text. It flags anything missing or extra, and runs one focused test at most.
 
