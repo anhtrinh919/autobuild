@@ -67,6 +67,8 @@ In legacy mode, give every roadmap phase an approved `phase-<N>-<slug>` ID and m
 
 In legacy mode, mark every finished phase `shipped` and every other phase `planned`.
 
+Keep the existing roadmap's order and phases. The template's phase-order rules apply to new roadmaps only.
+
 Rewrite each legacy line to Autobuild's word and sentence rules, and its no-invented-limits rule. A structural copy is not a migration.
 
 In upgrade mode, keep every PRD sentence except its routing metadata.

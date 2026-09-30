@@ -179,6 +179,7 @@ The check covers:
 - Global mode only: every section is present, grounded in a settled decision.
 - Global mode only: every product principle is something a reviewer could check on a screen.
 - Global mode only: every "When is done" criterion is checkable, and names a real motivation.
+- Global mode only: the roadmap follows `../../templates/prd.md`'s phase order — mock journey, core concept, then small slices, core first.
 - Per-phase mode only: an approved feature-phase item appears once in `prd.md`'s Roadmap.
 - Every limit in the doc was stated by the user or proven by research, and names its scope.
 

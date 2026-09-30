@@ -55,6 +55,7 @@ for route in ("autobuild:migrate", "autobuild:explore", "autobuild:spec", "autob
 
 assert "status is `verified`" in router, "router does not guard unfinished implementation"
 assert "exact heading `## <phase-id>`" in router, "router does not use exact phase closure"
+assert "Phase 1 walks the whole journey, end to end, on seeded mock data." in (root / "templates/prd.md").read_text(), "prd template lacks the roadmap order"
 assert "status `shipped`" in router, "router does not close phases by roadmap status"
 assert "## Docs" in (root / "stack.md").read_text(), "living and snapshot docs are undefined"
 assert "autobuild.polish-action" in router, "router cannot recover an interrupted polish action"

@@ -72,9 +72,13 @@ Status is `planned` until Wrap ships the phase, then `shipped`. The router reads
 
 The phase directory is `spec/<phase-id>`. Use lowercase kebab-case. Never derive it later.
 
-The first phases deliver the core promise — the one thing the product fundamentally does — end to end, as thin as it can run.
+Phase 1 walks the whole journey, end to end, on seeded mock data. It builds the real screens — or the real commands, for a product without screens. Later phases keep them and replace the mock data.
 
-Every phase after that is one vertical slice — one thing the product can do, or the user can.
+Phase 2 proves the core concept — the one thing the product fundamentally does, working for real.
+
+When the core concept might not work at all, propose proving it first. The user decides.
+
+Every phase after that is one small vertical slice — one thing a user can now do, never a whole feature. Core slices come first, niceties after.
 
 Slice by user-facing value, never by pipeline's-own-work-order, an output-class ladder, or a single artifact's property. Run the slice test on each phase: a user outside the team can say what changed. If the user calls the roadmap illogical, the axis is wrong, not the phase — reslice from a different axis, don't reorder within this one.
 
